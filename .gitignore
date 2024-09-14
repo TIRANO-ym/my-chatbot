@@ -1,1 +1,2 @@
 LLM/models/
+LLM/custom-model-files/*.gguf

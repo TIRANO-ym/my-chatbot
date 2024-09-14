@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/translate": "^8.5.0",
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "express": "^4.21.0",
-    "ollama": "^0.5.9"
+    "openai": "^4.60.1"
   }
 }

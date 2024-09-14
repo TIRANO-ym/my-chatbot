@@ -1,0 +1,20 @@
+1. lliama2는 영어로만 대답. 따라서 한국어 모델 gguf 찾아서 설치
+>>> https://huggingface.co/heegyu/EEVE-Korean-Instruct-10.8B-v1.0-GGUF/tree/main 링크 접속
+>>> ggml-model-Q5_K_M.gguf 파일 다운로드
+
+2. 다운로드한 gguf 파일을 ./custom-model-file 안에 둔다.
+3. 모델을 튜닝할 Modelfile을 ./custom-model-file 안에 둔다.
+>>> 본인의 경우 KoreanModelfile 작성해서 사용했음. 프로젝트에 포함되어있음
+>>> 굳이 저 경로가 아니더라도, gguf 파일과 Modelfile이 같은 경로에 있기만 하면 됨.
+
+4. cmd 열어서 gguf 파일과 Modelfile을 둔 경로로 이동
+>>> cd .\LLM\custom-model-files
+
+5. 모델 생성
+>>> ollama create kofriend -f .\KoreanModelfile
+
+6. 모델이 잘 생성되었는지 확인 (위에서 만든 kofriend 모델 나오면 성공)
+>>> ollama list
+
+7. 모델과 대화 테스트
+>>> ollama run kofriend

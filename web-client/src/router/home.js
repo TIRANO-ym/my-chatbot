@@ -20,13 +20,13 @@ const History = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  // display: flex;
+  // flex-direction: column;
+  // gap: 10px;
   padding: 20px;
-  text-align: center;
 `;
 const BotSaid = styled.div`
+  width: fit-content;
   max-width: 55%;
   min-height: 50px;
   margin-right: auto;
@@ -35,10 +35,13 @@ const BotSaid = styled.div`
   background-color: white;
   color: black;
   display: flex;
-  padding: 0 20px;
+  padding: 20px;
+  margin-top: 10px;
   align-items: center;
+  word-break: keep-all;
 `;
 const ISaid = styled.div`
+  width: fit-content;
   max-width: 55%;
   min-height: 50px;
   margin-left: auto;
@@ -47,7 +50,8 @@ const ISaid = styled.div`
   background-color: rgb(142, 172, 83);
   color: black;
   display: flex;
-  padding: 0 20px;
+  padding: 20px;
+  margin-top: 10px;
   align-items: center;
 `;
 
@@ -88,21 +92,56 @@ const SendButton = styled.button`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: tomato;
+  width: 100%;
+  max-height: 50px;
+  overflow-y: auto;
+  text-align: center;
+`;
+
 export default function Home() {
   const [inputMessage, setInputMessage] = useState('');
   const [histories, setHistories] = useState([]);
+  const [errMsg, setErrMsg] = useState('');
+  // let pastMemory = [];
 
   const onInputChange = (e) => setInputMessage(e.target.value);
+
+  const pressEnter = (e)=>{
+    console.log(e);
+    if (e.key === "Enter"&& !e.shiftKey) {
+      e.preventDefault();
+      onTalkClick();
+    }
+  }
+
   const onTalkClick = async () => {
-    addHistory('me', inputMessage);
-    const response = await apiService.post('/chat/send_message', inputMessage);
+    setErrMsg('');
+    setInputMessage('');
+    addHistory('user', inputMessage);
+    const response = await apiService.post('/chat/send_message', {
+      inputMessage: inputMessage,
+      prevConversation: histories
+    });
     console.log(response);
-    addHistory('bot', response);
+
+    if (response.reply) {
+      addHistory('system', response.reply);
+    } else if (response.error) {
+      setErrMsg(response.error);
+    }
   };
 
-  // role: 'bot' or 'me'
+  // role: 'system' or 'user'
   const addHistory = (role, message) => {
-    setHistories((prev) => [...prev, { role: role, message: message}]);
+    const newObj = { role: role, content: message };
+    setHistories((prev) => [...prev, newObj]);
+    
+    // if (pastMemory.length >= 1000) {
+    //   pastMemory.shift();
+    // }
+    // pastMemory.push(newObj);
   };
 
   useEffect(() => {
@@ -112,17 +151,17 @@ export default function Home() {
     <Wrapper>
       <HistoryBox>
         <History>
-        <ISaid>테스트</ISaid>
           {
             histories.map((h, i) => {
-              return h.role === 'bot' ? <BotSaid key={i}>뭐임{h.message}</BotSaid>
-                              : <ISaid key={i}>뭐임{h.message}</ISaid>
+              return h.role === 'system' ? <BotSaid key={i}>{h.content}</BotSaid>
+                              : <ISaid key={i}>{h.content}</ISaid>
             })
           }
         </History>
       </HistoryBox>
+      {errMsg ?? <ErrorMessage>{errMsg}</ErrorMessage>}
       <MessageBox>
-        <InputArea type="text" value={inputMessage} onChange={onInputChange}/>
+        <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}/>
         <SendButton onClick={onTalkClick}>Talk</SendButton>
       </MessageBox>
     </Wrapper>
