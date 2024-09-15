@@ -1,2 +1,3 @@
 LLM/models/
 LLM/custom-model-files/*.gguf
+web-server/uploads/

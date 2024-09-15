@@ -181,6 +181,7 @@ export default function CreateBotModal({ mode, info, onClose }) {
   useEffect(() => {
     console.log('모달 열림! 인자: ', {mode, info, onClose});
   }, []);
+  const [photoUrl, setPhotoUrl] = useState('');
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [deletePhoto, setDeletePhoto] = useState(false);
@@ -252,17 +253,31 @@ export default function CreateBotModal({ mode, info, onClose }) {
     setIsUpdating(true);
     const dataset = {
       name: inputName,
-      image: deletePhoto ? '' : (editPhoto || ''),
       age: selectAge,
       sex: selectSex,
       mbti: isMbtiFlag ? selectMbti.join('') : '',
       custom_character: custom_character
     };
     console.log('입력한 모든 데이터들: ', );
+    let botId = info ? info.id : null;
     if (mode === 'create') {
-      await apiService.post('/bot/create_bot', dataset);
+      botId = await apiService.post('/bot/create_bot', dataset);
+      console.log('### 받은 봇 id: ', botId);
     } else {
       await apiService.post('/bot/update_bot', {...dataset, id: info.id});
+    }
+
+    // 이미지 파일 별도 처리
+    if (deletePhoto) {
+      
+    } else if (editPhoto) {
+      const renamedFile = new File([editPhoto], `bot_${botId}`, {
+        type: editPhoto.type,
+        lastModified: editPhoto.lastModified,
+      });
+      const formData = new FormData();
+      formData.append('file', renamedFile);
+      await apiService.postFile('/bot/bot_profile_image', formData);
     }
     onClose(true);
   };
@@ -308,8 +323,8 @@ export default function CreateBotModal({ mode, info, onClose }) {
           <div className="phoho-edit-options">
             <EditIcon/> <DeleteIcon onClick={onPhotoDelete}/>
           </div>
-          {(!deletePhoto && (editPhoto || info?.image)) ? (
-            <Photo src={(editPhotoUrl || info?.image)} />
+          {(!deletePhoto && (editPhoto || info?.imageUrl)) ? (
+            <Photo src={(editPhotoUrl || info?.imageUrl)} />
           ) : (
             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path clipRule="evenodd" fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />

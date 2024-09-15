@@ -2,15 +2,14 @@
 const sqlite3 = require("sqlite3").verbose()
 const database = new sqlite3.Database("../DB/mychatbot.db", (err) => {
   if (err) {
-    console.error('DB 생성 에러: ', err.message);
+    console.error('DB 연결 에러: ', err.message);
   }
-  console.log("Connected to the test database.");
+  console.log("Connected to the database.");
 })
 
 database.all(
   `CREATE TABLE if not exists bot(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    image BLOB NULL,
     name VARCHAR(255) NOT NULL,
     age INTEGER NULL,
     sex VARCHAR(10) NULL,
@@ -34,7 +33,16 @@ database.all(
 
 const db = {
   execute: (query, callback, params) => {
-    database.all(query, params ? params : [], callback);
+    console.log({query});
+    database.run(query, params ? params : [], function(err, rows, c) {
+      callback(err, rows, this.lastID);
+    });
+  },
+  select: (query, callback) => {
+    console.log({query});
+    database.all(query, function(err, rows) {
+      callback(err, rows, this.lastID);
+    });
   }
 }
 

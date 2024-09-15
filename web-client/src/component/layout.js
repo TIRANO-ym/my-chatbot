@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import apiService from "../service/apiService";
 import { BotProfile, EditIcon, PlusIcon } from "./icon-component";
 import CreateBotModal from "./create-bot-modal";
+import {Buffer} from 'buffer';
 
 const Wrapper = styled.div`
   display: grid;
@@ -74,12 +75,30 @@ export default function Layout() {
   };
 
   const getBotList = async () => {
-    const rows = await apiService.get('/bot/bot_list');
+    let rows = await apiService.get('/bot/bot_list');
+    console.log('봇리스트: ', rows);
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].image) {
+        const data = rows[i].image;
+        console.log('데이터', data);
+
+        apiService.postForGetFile('/bot/get_bot_image', rows[i].id).then((res) => {
+          console.log('이미지 별도 요청 결과: ', res);
+          rows[i].image = res;
+          rows[i].imageUrl = btoa(res);
+          // const reader = new FileReader();
+          // reader.onloadend = () => {
+          //   console.log('#### 이미지 url: ', reader.result);
+          //   rows[i].imageUrl = reader.result;
+          // };
+          // reader.readAsDataURL(rows[i].image);
+        });
+      }
+    }
     setBotList(rows);
   };
 
   const openModal = (data) => {
-    console.log('모달열림?');
     if (data) {
       setModalData({ mode: 'update', info: data })
     } else {
@@ -117,7 +136,7 @@ export default function Layout() {
               key={`bot_${i}`}
               onClick={() => changeBot(data.id)}
             >
-              <BotProfile src={data.image} idx={i}/>
+              <BotProfile src={data.imageUrl} idx={i}/>
               <p className="name">{data.name}</p>
               <EditIcon onClick={() => openModal(data)}/>
             </BotItem>
