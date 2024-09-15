@@ -1,44 +1,104 @@
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import Chat from "../router/chat";
+import { useEffect, useState } from "react";
+import apiService from "../service/apiService";
+import { BotProfile, EditIcon, PlusIcon } from "./icon-component";
+import CreateBotModal from "./create-bot-modal";
 
-// const Wrapper = styled.div`
-//   display: grid;
-//   gap: 50px;
-//   grid-template-columns: 1fr 4fr;
-//   padding: 50px 0px;
-//   width: 100%;
-//   max-width: 860px;
-// `;
+const Wrapper = styled.div`
+  display: grid;
+  gap: 50px;
+  grid-template-columns: 20% 3fr;
+  padding: 50px;
+  width: 100%;
+  max-width: 1500px;
+`;
 
-// const Menu = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   gap: 20px;
-// `;
+const BotList = styled.div`
+  display: flex;
+  flex-direction: column;
+  // gap: 20px;
+  .new_bot {
+    svg {
+      width: 20px;
+      margin-right: 7%;
+    }
+  }
+`;
 
-// const MenuItem = styled.div`
-//   cursor: pointer;
-//   display: flex;
-//   aling-self: center;
-//   justify-content: center;
-//   border: 2px solid white;
-//   height: 50px;
-//   width: 50px;
-//   border-radius: 50%;
-//   svg {
-//     width: 30px;
-//     fill: white;
-//   }
-//   &.log-out {
-//     border-color: tomato;
-//     svg {
-//       fill: tomato;
-//     }
-//   }
-// `;
+const BotItem = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  // justify-content: center;
+  padding: 20px;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.055);
+    .icon {
+      display: initial;
+    }
+  }
+  &.selected {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .name {
+    display: block;
+    width: 90%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .icon {
+    display: none;
+    width: 20px;
+    opacity: 0.6;
+  }
+  .icon:hover {
+    opacity: 1;
+  }
+`;
 
 export default function Layout() {
+  const [botList, setBotList] = useState([]);
+  const [selectedBot, setSelectedBot] = useState(1);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
+
+  const changeBot = (bot_id) => {
+    setSelectedBot(bot_id);
+  };
+
+  const getBotList = async () => {
+    const rows = await apiService.get('/bot/bot_list');
+    setBotList(rows);
+  };
+
+  const openModal = (data) => {
+    console.log('모달열림?');
+    if (data) {
+      setModalData({ mode: 'update', info: data })
+    } else {
+      setModalData({ mode: 'create' });
+    }
+    setModalOpen(true);
+  };
+  const closeModal = (isUpdated) => {
+    setModalOpen(false);
+    setModalData(null);
+    if (isUpdated) {
+      getBotList();
+    }
+  }
+
+  useEffect(() => {
+    getBotList();
+  }, [])
+
   // const navigate = useNavigate();
   // const onLogOut = async () => {
   //   const ok = confirm('Are you sure you want to log out?');
@@ -48,34 +108,27 @@ export default function Layout() {
   //   }
   // }
   return (
-    // <Wrapper>
-      // <Menu>
-      //   <Link to="/">
-      //     <MenuItem>
-      //       <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      //         <path clipRule="evenodd" fillRule="evenodd" d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" />
-      //       </svg>
-      //     </MenuItem>
-      //   </Link>
-
-      //   <Link to="/profile">
-      //     <MenuItem>
-      //       <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      //         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-      //       </svg>
-      //     </MenuItem>
-      //   </Link>
-
-      //   <Link to="">
-      //     <MenuItem className="log-out" onClick={onLogOut}>
-      //       <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      //         <path clipRule="evenodd" fillRule="evenodd" d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75V4.25Z" />
-      //         <path clipRule="evenodd" fillRule="evenodd" d="M14 10a.75.75 0 0 0-.75-.75H3.704l1.048-.943a.75.75 0 1 0-1.004-1.114l-2.5 2.25a.75.75 0 0 0 0 1.114l2.5 2.25a.75.75 0 1 0 1.004-1.114l-1.048-.943h9.546A.75.75 0 0 0 14 10Z" />
-      //       </svg>
-      //     </MenuItem>
-      //   </Link>
-      // </Menu>
-      <Outlet/>
-    // </Wrapper>
+    <Wrapper>
+      <BotList>
+        {
+          botList.map((data, i) => {
+            return <BotItem
+              className={selectedBot === data.id ? 'selected' : ''}
+              key={`bot_${i}`}
+              onClick={() => changeBot(data.id)}
+            >
+              <BotProfile src={data.image} idx={i}/>
+              <p className="name">{data.name}</p>
+              <EditIcon/>
+            </BotItem>
+          })
+        }
+        <BotItem className="new_bot" onClick={() => openModal()}>
+          <PlusIcon/> 새 친구 추가
+        </BotItem>
+      </BotList>
+      <Chat bot_id={selectedBot}/>
+      { isModalOpen ? <CreateBotModal {...modalData} onClose={closeModal}/> : null}
+    </Wrapper>
   );
 }

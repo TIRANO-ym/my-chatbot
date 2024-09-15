@@ -21,5 +21,8 @@ body {
 }
 
 .test {
-  color: rgb(142, 172, 83)
+  color: rgba(255, 255, 255, 0.055);
+  text-overflow: ellipsis;
+  display: initial;
+  grid-template-columns: 20% 80%;
 }

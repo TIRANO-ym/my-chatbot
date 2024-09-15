@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 app.set('port', PORT);
 
 const chatRouter = require("./router/chat");
+const botRouter = require("./router/bot");
 
 app.get('/', (req, res) => {
   console.log('app.js에서 요청 수신!');
@@ -24,3 +25,4 @@ app.listen(app.get('port'), () => {
 });
 
 app.use("/chat", chatRouter);
+app.use("/bot", botRouter);

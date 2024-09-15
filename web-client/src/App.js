@@ -1,7 +1,7 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Layout from "./component/layout";
-import Home from "./router/home";
+import Chat from "./router/chat";
 import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 
@@ -11,10 +11,10 @@ const router = createBrowserRouter([
     // element: <ProtectedRoute><Layout/></ProtectedRoute>,
     element: <Layout/>,
     children: [
-      {
-        path: "",
-        element: <Home/>
-      }
+      // {
+      //   path: "",
+      //   element: <Chat/>
+      // }
       // {
       //   path: "profile",
       //   element: <Profile/>

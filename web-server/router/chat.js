@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const db = require("../db/db");
 
 // const { default: ollama } = require('ollama');
 // const axios = require('axios');
@@ -12,6 +13,7 @@ const openai = new OpenAI({
 
 router.get("/check_model_is_ready", (req, res) => {
   // custom learning you want
+  console.log('테스트 요청 수신...');
   res.json(true);
 });
 
