@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../db/db");
 
 router.get("/bot_list", (req, res) => {
-  db.execute('SELECT id, name, image FROM bot', (err, rows) => {
+  db.execute('SELECT * FROM bot', (err, rows) => {
     res.json(rows);
   });
 });

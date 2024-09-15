@@ -22,7 +22,6 @@ database.all(
     if (err) {
       console.log('테이블 생성 에러: ', err);
     } else {
-      console.log('테이블 준비됨: ', rows);
       // 첫 생성 시 default bot 추가
       database.all("INSERT INTO bot (name) SELECT '기본 친구' WHERE NOT EXISTS (SELECT * FROM bot)", [], (err, rows) => {
         if (err) {

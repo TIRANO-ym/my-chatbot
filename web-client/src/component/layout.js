@@ -119,7 +119,7 @@ export default function Layout() {
             >
               <BotProfile src={data.image} idx={i}/>
               <p className="name">{data.name}</p>
-              <EditIcon/>
+              <EditIcon onClick={() => openModal(data)}/>
             </BotItem>
           })
         }

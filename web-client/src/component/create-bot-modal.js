@@ -183,12 +183,12 @@ export default function CreateBotModal({ mode, info, onClose }) {
   const [errMsg, setErrMsg] = useState('');
 
   // --------- 사용자 입력 폼 ---------
-  const [inputName, setInputName] = useState('');
-  const [selectAge, setSelectAge] = useState('');
-  const [selectSex, setSelectSex] = useState('');
-  const [isMbtiFlag, setMbtiFlag] = useState(true);
-  const [selectMbti, setSelectMbti] = useState(['i', 's', 't', 'j']);
-  const [custom_character, setCustomCharacter] = useState('');
+  const [inputName, setInputName] = useState(info && info.name ? info.name : '');
+  const [selectAge, setSelectAge] = useState(info && info.age ? info.age : '');
+  const [selectSex, setSelectSex] = useState(info && info.sex ? info.sex : '');
+  const [isMbtiFlag, setMbtiFlag] = useState(info && !info.mbti ? false : true);
+  const [selectMbti, setSelectMbti] = useState(info && info.mbti ? info.mbti.split('') : ['i', 's', 't', 'j']);
+  const [custom_character, setCustomCharacter] = useState(info && info.custom_character ? info.custom_character : '');
   // ---------------------------------
 
   const handleInputName = (e) => {
