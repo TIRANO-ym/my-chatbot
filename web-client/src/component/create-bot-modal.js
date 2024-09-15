@@ -161,6 +161,12 @@ const ModalSubmitBtn = styled.div`
     font-weight: bold;
     font-size: 1.1rem;
   }
+  .delete {
+    background-color: tomato;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
   .errMsg {
     width: fit-content;
     padding: 0 20px;
@@ -260,6 +266,17 @@ export default function CreateBotModal({ mode, info, onClose }) {
     }
     onClose(true);
   };
+  const deleteClick = async() => {
+    if (isUpdating) return;
+    const ok = window.confirm(`"${info.name}" 봇을 정말 삭제할건가요?`);
+    if (!ok) return;
+    const finallyOk = window.confirm('봇과 기존 대화 내역까지 모두 삭제되며 이는 복구할 수 없습니다.\n정말 삭제할까요?');
+    if (!finallyOk) return;
+
+    setIsUpdating(true);
+    await apiService.post('/bot/delete_bot', {id: info.id});
+    onClose(true);
+  }
 
   // --------- 커스텀 스타일 ---------
   const modalStyles = {
@@ -386,6 +403,10 @@ export default function CreateBotModal({ mode, info, onClose }) {
         isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
                   : (mode === 'create') ? '생성' : '수정'
       }</button>
+      {mode === 'update' ? <button className="delete" onClick={deleteClick}>{
+        isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
+                  : '삭제'
+      }</button> : null}
     </ModalSubmitBtn>
   </Modal>;
 }

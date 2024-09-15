@@ -124,7 +124,7 @@ export default function Layout() {
           })
         }
         <BotItem className="new_bot" onClick={() => openModal()}>
-          <PlusIcon/> 새 친구 추가
+          <PlusIcon/> 새 친구 봇 추가
         </BotItem>
       </BotList>
       <Chat bot_id={selectedBot}/>
