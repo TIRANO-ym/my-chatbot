@@ -22,6 +22,8 @@ body {
 
 .test {
   color: rgb(170, 144, 202);
+  color: gray;
+  
   text-overflow: ellipsis;
   display: initial;
   grid-template-columns: 20% 80%;

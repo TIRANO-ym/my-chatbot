@@ -134,6 +134,9 @@ const TextArea = styled.textarea`
   padding: 10px;
   font-family: var(--font-nanumfont);
   font-size: 1.1rem;
+  &::placeholder {
+    font-size: 1rem;
+  }
 `;
 
 const ModalSubmitBtn = styled.div`
@@ -149,10 +152,14 @@ const ModalSubmitBtn = styled.div`
     padding: 4px 10px;
     border-radius: 10px;
     cursor: pointer;
-    width: 100px;
+    min-width: 100px;
     &:hover,
     &:active {
       opacity: 0.9;
+    }
+    &:disabled {
+      background-color: rgb(80, 80, 80);
+      cursor: default;
     }
   }
   .update {
@@ -160,6 +167,9 @@ const ModalSubmitBtn = styled.div`
     color: white;
     font-weight: bold;
     font-size: 1.1rem;
+    p {
+      margin-right: 10px;
+    }
   }
   .delete {
     background-color: tomato;
@@ -215,8 +225,7 @@ export default function CreateBotModal({ mode, info, onClose }) {
     });
   };
   const handleCustomChar = (e) => {
-    setCustomCharacter(e.target.value);
-    // setCustomCharacter(e.target.value.replace(/[@#$%\^&-_{}:<>\/\?]/gi, ''));
+    setCustomCharacter(e.target.value.replace(/[@#$%\^&\-_{}:"<>\/\?]/gi, ''));
   }
   // ---------------------------------
 
@@ -407,18 +416,18 @@ export default function CreateBotModal({ mode, info, onClose }) {
       <Row>
         <TextLabel>기타 설정</TextLabel>
         <ContentField>
-          <TextArea value={custom_character} onChange={handleCustomChar}/>
+          <TextArea value={custom_character} onChange={handleCustomChar} placeholder="그 외 설정하고 싶은 성격이나 특징을 직접 입력해주세요.&#10;한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!&#10;* 예시 1: 너는 중세 시대에 살고 있는 공주님이야. 공주님 처럼 대답해줘.&#10;* 예시 2: You are a princess living in the Middle Ages. Answer like a princess."/>
         </ContentField>
       </Row>
     </ModalWrapper>
     
     <ModalSubmitBtn>
       <ErrorMessage message={errMsg}/>
-      <button className="update" onClick={onSubmit}>{
-        isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
+      <button className="update" disabled={isUpdating} onClick={onSubmit}>{
+        isUpdating ? <LoadingWrapper><p>모델 생성 중... </p><Loading/></LoadingWrapper>
                   : (mode === 'create') ? '생성' : '수정'
       }</button>
-      {mode === 'update' ? <button className="delete" onClick={deleteClick}>{
+      {mode === 'update' ? <button className="delete" disabled={isUpdating} onClick={deleteClick}>{
         isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
                   : '삭제'
       }</button> : null}

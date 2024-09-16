@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/db");
 const fs = require("fs");
+const { exec, execSync } = require('child_process');
 
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
@@ -59,23 +60,122 @@ router.post("/delete_bot", (req, res) => {
       console.log(err);
     }
     console.log(`${id}번 봇 삭제 완료`);
-    await deleteModel(id);
+    deleteModel(id);
     res.json(true);
   })
 });
 
 async function createModel(data, id) {
-  // todo: 모델 파일 내용 커스텀
-  // todo: 모델 파일 작성
-  // todo: ollama create 수행
-  // todo: ollama list 체크 후 완료
+  // 1. 모델 파일 내용 커스텀
+  const fileName = `CustomModel_${id}`;
+
+  let temperature = 0;
+  let isYoung = false;
+  if (data.age && data.age < 20) {
+    temperature += 1;
+    isYoung = true;
+  }
+  let ageInfo = data.age ? `${data.age}-year-old` : '';
+  let sexInfo = data.sex ? (
+    data.sex === 'f' ? (isYoung ? 'girl' : 'woman')
+    : (isYoung ? 'boy' : 'man')
+  ) : '';
+  if (ageInfo && sexInfo) {
+    sexInfo = ` ${sexInfo}`;
+  }
+
+  let personality = '';
+  if (data.mbti) {
+    if (data.mbti[0] === 'e') {
+      personality += `You have a lively personality.\n`;
+    } else {
+      personality += `You have a timid personality. Don't speak much.\n`;
+    }
+    if (data.mbti[1] === 'n') {
+      personality += `You have a lot of imagination.\n`;
+      temperature += 1;
+    } else {
+      personality += `You are thorough and precise.\n`;
+      temperature -= 1;
+    }
+    if (data.mbti[2] === 'f') {
+      personality += `You have a lot of sensitivity. Empathize and encourage to user.\n`;
+      temperature += 1;
+    } else {
+      personality += `You are logical and analytical.\n`;
+      temperature -= 1;
+    }
+    if (data.mbti[3] === 'p') {
+      personality += `You are flexible.\n\n`;
+      temperature += 1;
+    } else {
+      personality += `You are well-planned and well-directed.\n\n`;
+      temperature -= 1;
+    }
+  }
+
+  if (temperature < 0) temperature = 0;
+
+  const content = `FROM ggml-model-Q5_K_M.gguf
+
+TEMPLATE """{{- if .System }}
+<s>{{ .System }}</s>
+{{- end }}
+<s>Human:
+{{ .Prompt }}</s>
+<s>Assistant:
+"""
+
+SYSTEM """
+Your name is ${data.name}.
+${(ageInfo || sexInfo) ? `You are a ${ageInfo}${sexInfo}.` : ''}
+You are my friend. Answer like a friend.${personality ? `\n${personality}` : ''}
+${data.custom_character ? data.custom_character + '\n' : ''}
+Don't speak something i didn't even ask.
+Don't use honorifics. Speak informally.
+Speak in Korean only.
+Speak briefly in less than 5 sentences.
+"""
+
+PARAMETER temperature ${temperature}
+PARAMETER stop <s>
+PARAMETER stop </s>`;
+
+  // 2. 모델 파일 작성
+  const step2 = await fs.writeFileSync(`../LLM/custom-model-files/${fileName}`, content);
+  console.log('### step2: ', step2);
+
+  // 3. 올라마 모델 생성
+  const step3 = await execSync(`ollama create friend${id} -f ../LLM/custom-model-files/${fileName}`);
+  console.log('### step3: ', step3);
+
+  // 4. 생성 확인
+  // await new Promise((resolve) => {
+  //   while(true) {
+  //     setTimeout(async () => {
+  //       const step4 = await execSync(`ollama list`);
+  //       console.log('### step4: ', step4);
+  //       if (step4) {
+  //         resolve(true);
+  //       }
+  //     }, 1000);
+  //   }
+  // })
+  
   return true;
 }
 
-async function deleteModel(id) {
-  // todo: ollama rm `friend-${id}`
-  // todo: 모델 파일 삭제
-  return true;
+function deleteModel(id) {
+  exec(`ollama rm friend${id}`, (err, stdout) => {
+    if(err) {
+      console.log('ollama 모델 삭제 에러: ', err);
+    }
+  });
+  fs.unlink(`../LLM/custom-model-files/CustomModel_${id}`, (err) => {
+    if (err) {
+      console.log('CustomModel 파일 삭제 에러: ', err);
+    }
+  });
 }
 
 router.post("/bot_profile_image", upload.single('file'), (req, res) => {
