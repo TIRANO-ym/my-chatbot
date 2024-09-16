@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   padding: 50px;
   width: 100%;
   max-width: 1500px;
+  height: 100%;
 `;
 
 const BotList = styled.div`
@@ -55,7 +56,7 @@ const BotItem = styled.div`
   }
   .icon {
     display: none;
-    width: 20px;
+    width: 30px;
     opacity: 0.6;
   }
   .icon:hover {
@@ -80,7 +81,8 @@ export default function Layout() {
     setBotList(rows);
   };
 
-  const openModal = (data) => {
+  const openModal = (e, data) => {
+    e.stopPropagation();
     if (data) {
       setModalData({ mode: 'update', info: data })
     } else {
@@ -120,11 +122,11 @@ export default function Layout() {
             >
               <BotProfile src={data.image} idx={i}/>
               <p className="name">{data.name}</p>
-              <EditIcon onClick={() => openModal(data)}/>
+              <EditIcon onClick={(e) => openModal(e, data)}/>
             </BotItem>
           })
         }
-        <BotItem className="new_bot" onClick={() => openModal()}>
+        <BotItem className="new_bot" onClick={(e) => openModal(e)}>
           <PlusIcon/> 새 친구 봇 추가
         </BotItem>
       </BotList>

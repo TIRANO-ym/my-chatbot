@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import apiService from "../service/apiService";
+import { BatteryLoader, BotTalkingLoader } from "../component/icon-component";
+import historyService from "../service/historyService";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -8,21 +10,21 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: hidden;
 `;
 
 const HistoryBox = styled.div`
   height: calc(100% - 100px);
   width: 100%;
   background-color: rgba(255, 255, 255, 0.06);
+  position: relative;
 `;
 const History = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  // display: flex;
-  // flex-direction: column;
-  // gap: 10px;
   padding: 20px;
+  align-content: flex-end;
 `;
 const BotSaid = styled.div`
   width: fit-content;
@@ -46,7 +48,7 @@ const ISaid = styled.div`
   margin-left: auto;
   border-radius: 20px;
   border: 0;
-  background-color: rgb(142, 172, 83);
+  background-color: rgb(213 192 237);
   color: black;
   display: flex;
   padding: 20px;
@@ -76,30 +78,20 @@ const InputArea = styled.textarea`
     border: solid 2px rgb(148, 148, 148);
   }
 `;
-const SendButton = styled.button`
-  background-color: rgb(46, 96, 146);
-  height: 100%;
-  width: 100px;
-  border: 0;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: white;
-  &:hover {
-    opacity: 0.9;
-  }
-`;
 
 const ErrorMessage = styled.div`
   color: tomato;
   width: 100%;
   max-height: 50px;
-  overflow-y: auto;
+  overflow-y: hidden;
   text-align: center;
 `;
 
 export default function Chat(props) {
+  const [currentBotId, setCurrentBotId] = useState(props.bot_id);
+  const [isBotLoading, setIsBotLoading] = useState(false);
+  const [isBotTalking, setIsBotTalking] = useState(false);
+
   const [inputMessage, setInputMessage] = useState('');
   const [histories, setHistories] = useState([]);
   const [errMsg, setErrMsg] = useState('');
@@ -108,10 +100,11 @@ export default function Chat(props) {
   const onInputChange = (e) => setInputMessage(e.target.value);
 
   const pressEnter = (e)=>{
-    console.log(e);
-    if (e.key === "Enter"&& !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      onTalkClick();
+      if (!isBotTalking) {
+        onTalkClick();
+      }
     }
   }
 
@@ -119,14 +112,17 @@ export default function Chat(props) {
     setErrMsg('');
     setInputMessage('');
     addHistory('user', inputMessage);
+    setIsBotTalking(true);
     const response = await apiService.post('/chat/send_message', {
       inputMessage: inputMessage,
-      prevConversation: histories
+      prevConversation: histories,
+      bot_id: currentBotId
     });
     console.log(response);
-
+    setIsBotTalking(false);
     if (response.reply) {
       addHistory('system', response.reply);
+      updateHistoryToServer();    // 현 대화(마지막 봇 대답 + 지금 내가 하는 말)는 포함되지 않고 이전 대화기록만 업데이트됨
     } else if (response.error) {
       setErrMsg(response.error);
     }
@@ -136,18 +132,35 @@ export default function Chat(props) {
   const addHistory = (role, message) => {
     const newObj = { role: role, content: message };
     setHistories((prev) => [...prev, newObj]);
-    
-    // if (pastMemory.length >= 1000) {
-    //   pastMemory.shift();
-    // }
-    // pastMemory.push(newObj);
   };
+
+  const updateHistoryToServer = async () => {
+    if (histories.length) {
+      await historyService.update(currentBotId, histories);
+    }
+    return true;
+  };
+
+  const onChangeBot = async (new_bot_id) => {
+    setIsBotLoading(true);
+    await updateHistoryToServer();
+    setCurrentBotId(new_bot_id);
+    setHistories([]);
+    const result = await historyService.get(new_bot_id);
+    // console.log('봇 히스토리 로딩: ', result);
+    if (typeof result === 'string') {
+      setErrMsg(result);
+    }
+    setHistories(result);
+    setIsBotLoading(false);
+  }
 
   useEffect(() => {
   }, []);
 
   useEffect(() => {
-    console.log('bot 바뀜! ', props.bot_id);
+    console.log('bot 바뀜 ', props.bot_id);
+    onChangeBot(props.bot_id);
   }, [props.bot_id]);
 
   return (
@@ -160,12 +173,13 @@ export default function Chat(props) {
                               : <ISaid key={i}>{h.content}</ISaid>
             })
           }
+          { isBotTalking ? <BotSaid><BotTalkingLoader/></BotSaid> : null }
         </History>
+        { isBotLoading ? <BatteryLoader/> : null }
       </HistoryBox>
-      {errMsg ?? <ErrorMessage>{errMsg}</ErrorMessage>}
+      {errMsg ? <ErrorMessage>{errMsg}</ErrorMessage> : null}
       <MessageBox>
         <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}/>
-        {/* <SendButton onClick={onTalkClick}>Talk</SendButton> */}
       </MessageBox>
     </Wrapper>
   );

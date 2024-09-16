@@ -1,3 +1,5 @@
 LLM/models/
 LLM/custom-model-files/*.gguf
+LLM/custom-model-files/CustomModel_*
 web-server/uploads/
+DB/chat_history/

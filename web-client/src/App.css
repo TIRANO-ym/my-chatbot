@@ -22,8 +22,8 @@ body {
 
 .test {
   color: rgb(170, 144, 202);
-  color: gray;
-  
+  color: rgb(68, 68, 68);
+  cursor: default;
   text-overflow: ellipsis;
   display: initial;
   grid-template-columns: 20% 80%;

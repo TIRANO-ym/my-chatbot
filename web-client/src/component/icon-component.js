@@ -67,3 +67,72 @@ export const BotProfile = ({ src, idx }) => {
     return <ImgBox style={{backgroundColor: palette[idx % palette.length]}}/>
   }
 }
+
+const BatteryLoading = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(184 157 217 / 4%);
+  .loader {
+    width: 80px;
+    height: 40px;
+    color: #000;
+    border: 2px solid rgb(184 157 217);
+    border-right-color: transparent;
+    padding: 3px;
+    background: 
+      repeating-linear-gradient(90deg,rgb(184 157 217) 0 10px,#0000 0 15px) 
+      0/0% no-repeat content-box content-box;
+    position: relative;
+    box-sizing: border-box;
+    animation: l5 2s infinite steps(6);
+  }
+  .loader::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: 100%;
+    width: 10px;
+    background:
+      linear-gradient(
+          #0000   calc(50% - 7px),rgb(184 157 217) 0 calc(50% - 5px),
+          #0000 0 calc(50% + 5px),rgb(184 157 217) 0 calc(50% + 7px),#0000 0) left /100% 100%,
+      linear-gradient(rgb(184 157 217) calc(50% - 5px),#0000        0 calc(50% + 5px),rgb(184 157 217) 0) left /2px 100%,
+      linear-gradient(#0000        calc(50% - 5px),rgb(184 157 217) 0 calc(50% + 5px),#0000        0) right/2px 100%;
+    background-repeat:no-repeat;
+  }
+  @keyframes l5 {
+      100% {background-size:120%}
+  }
+`;
+
+export const BatteryLoader = () => {
+  return <BatteryLoading><div className="loader"></div></BatteryLoading>;
+}
+
+const TalkingLoading = styled.div`
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  .loader {
+    width: 15px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    animation: l5 1s infinite linear alternate;
+  }
+  @keyframes l5 {
+      0%  {box-shadow: 20px 0 #000, -20px 0 #0002;background: #000 }
+      33% {box-shadow: 20px 0 #000, -20px 0 #0002;background: #0002}
+      66% {box-shadow: 20px 0 #0002,-20px 0 #000; background: #0002}
+      100%{box-shadow: 20px 0 #0002,-20px 0 #000; background: #000 }
+  }
+`;
+export const BotTalkingLoader = () => {
+  return <TalkingLoading><div className="loader"></div></TalkingLoading>;
+}

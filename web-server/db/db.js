@@ -22,11 +22,11 @@ database.all(
       console.log('테이블 생성 에러: ', err);
     } else {
       // 첫 생성 시 default bot 추가
-      database.all("INSERT INTO bot (name) SELECT '기본 친구' WHERE NOT EXISTS (SELECT * FROM bot)", [], (err, rows) => {
-        if (err) {
-          console.log('insert default data error: ', err);
-        }
-      })
+      // database.all("INSERT INTO bot (name) SELECT '기본 친구' WHERE NOT EXISTS (SELECT * FROM bot)", [], (err, rows) => {
+      //   if (err) {
+      //     console.log('insert default data error: ', err);
+      //   }
+      // })
     }
   }
 );

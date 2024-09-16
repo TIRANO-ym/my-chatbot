@@ -18,7 +18,7 @@ router.get("/check_model_is_ready", (req, res) => {
 });
 
 router.post("/send_message", async (req, res) => {
-  const { prevConversation, inputMessage } = req.body.data;
+  const { prevConversation, inputMessage, bot_id } = req.body.data;
   console.log('지금 보낼 메시지: ', inputMessage);
   console.log('과거 대화들: ', prevConversation);
 
@@ -30,7 +30,7 @@ router.post("/send_message", async (req, res) => {
   const msgArr = [...prevConversation, { role: 'user', content: inputMessage }];
 
   const completion = await openai.chat.completions.create({
-    model: 'kofriend',
+    model: `friend${bot_id}`,
     messages: msgArr
   });
   try {
@@ -48,18 +48,28 @@ router.post("/send_message", async (req, res) => {
 
 function trimReply(str) {
   // 시작지점 줄바꿈 포함되는 문제
-  if (str.startsWith('\r\n')) {
-    str = str.replace('\r\n', '');
-  }
+  str = str.replace(/^\s/, '');
+
   // 이상한 주석 쳐내기
-  let idx = str.indexOf('\r\n Human:\r\n');
+  let idx = str.indexOf('\r\n Human:');
   if (idx !== -1) {
     str = str.slice(0, idx);
   }
-  idx = str.indexOf('\r\n Assistant:\r\n');
+  idx = str.indexOf(' Human:');
   if (idx !== -1) {
     str = str.slice(0, idx);
   }
+  idx = str.indexOf('\r\n Assistant:');
+  if (idx !== -1) {
+    str = str.slice(0, idx);
+  }
+  idx = str.indexOf(' Assistant:');
+  if (idx !== -1) {
+    str = str.slice(0, idx);
+  }
+
+  // 끝에 남은 여백 없애기
+  str = str.replace(/\s$/, '');
   return str;
 }
 

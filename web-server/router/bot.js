@@ -23,6 +23,7 @@ router.post("/create_bot", async (req, res) => {
     }
     console.log(`신규 봇 "${name}" DB에 추가 완료`, insertedId);
     await createModel({ name, age, sex, mbti, custom_character }, insertedId);
+    createHistoryFile(insertedId);
     res.json(insertedId);
   });
 });
@@ -206,5 +207,40 @@ router.post("/bot_profile_image", upload.single('file'), (req, res) => {
 //     res.send(rows[0].image);
 //   });
 // })
+
+function createHistoryFile(id) {
+  fs.writeFile(`../DB/chat_history/bot_${id}`, JSON.stringify([]), (err) => {
+    if (err) {
+      console.log('첫 히스토리 생성 오류: ', err);
+    }
+  });
+}
+
+router.post('/get_bot_chat_history', (req, res) => {
+  const id = req.body.data;
+  const filePath = `../DB/chat_history/bot_${id}`;
+  try {
+    fs.readFile(filePath, 'utf8', (err, fileContent) => {
+      if (err) {
+        res.json('대화 내역 불러오기 실패: ', err.message);
+      } else {
+        res.json(JSON.parse(fileContent));
+      }
+    });
+  } catch (e) {
+    res.json('대화 내역 불러오기 실패: ', e.message);
+  }
+});
+
+router.post('/update_bot_chat_history', (req, res) => {
+  const {bot_id, histories} = req.body.data;
+  const filePath = `../DB/chat_history/bot_${bot_id}`;
+  fs.writeFile(filePath, histories, (err) => {
+    if (err) {
+      console.log('대화 히스토리 업데이트 오류: ', err);
+    }
+    res.json(true);
+  });
+});
 
 module.exports = router;
