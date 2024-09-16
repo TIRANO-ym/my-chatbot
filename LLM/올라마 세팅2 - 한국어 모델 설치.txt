@@ -5,7 +5,7 @@
 2. 다운로드한 gguf 파일을 ./custom-model-file 안에 둔다.
 3. 모델을 튜닝할 Modelfile을 ./custom-model-file 안에 둔다.
 >>> 본인의 경우 KoreanModelfile 작성해서 사용했음. 프로젝트에 포함되어있음
->>> 굳이 저 경로가 아니더라도, gguf 파일과 Modelfile이 같은 경로에 있기만 하면 됨.
+>>> (gguf 파일과 Modelfile이 같은 경로에 있기만 하면 되는데, 해당 프로젝트는 저 경로 기준으로 구현함.)
 
 4. cmd 열어서 gguf 파일과 Modelfile을 둔 경로로 이동
 >>> cd .\LLM\custom-model-files

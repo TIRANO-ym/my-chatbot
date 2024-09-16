@@ -77,24 +77,6 @@ export default function Layout() {
   const getBotList = async () => {
     let rows = await apiService.get('/bot/bot_list');
     console.log('봇리스트: ', rows);
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].image) {
-        const data = rows[i].image;
-        console.log('데이터', data);
-
-        apiService.postForGetFile('/bot/get_bot_image', rows[i].id).then((res) => {
-          console.log('이미지 별도 요청 결과: ', res);
-          rows[i].image = res;
-          rows[i].imageUrl = btoa(res);
-          // const reader = new FileReader();
-          // reader.onloadend = () => {
-          //   console.log('#### 이미지 url: ', reader.result);
-          //   rows[i].imageUrl = reader.result;
-          // };
-          // reader.readAsDataURL(rows[i].image);
-        });
-      }
-    }
     setBotList(rows);
   };
 
@@ -136,7 +118,7 @@ export default function Layout() {
               key={`bot_${i}`}
               onClick={() => changeBot(data.id)}
             >
-              <BotProfile src={data.imageUrl} idx={i}/>
+              <BotProfile src={data.image} idx={i}/>
               <p className="name">{data.name}</p>
               <EditIcon onClick={() => openModal(data)}/>
             </BotItem>

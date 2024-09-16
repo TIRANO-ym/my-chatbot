@@ -47,23 +47,23 @@ export const Loading = styled.div`
   @keyframes l3 {to{transform: rotate(1turn)}}
 `;
 
-const BotProfileImg = styled.image`
-  min-width: 50px;
-  min-height: 50px;
-  border-radius: 50%;
-  margin-right: 7%;
-`;
-const RandomColorBox = styled.div`
+const ImgBox = styled.div`
   min-width: 30px;
   min-height: 30px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   margin-right: 7%;
+  overflow: hidden;
+  img {
+    width: 100%;
+  }
 `;
 export const BotProfile = ({ src, idx }) => {
   const palette = ['#6495ED', '#00BFFF', '#32BEBE', '#FF9E9B', '#E1B771'];
   if (src) {
-    return <BotProfileImg src={src}/>;
+    return <ImgBox><img src={src}/></ImgBox>
   } else {
-    return <RandomColorBox style={{backgroundColor: palette[idx % palette.length]}}/>
+    return <ImgBox style={{backgroundColor: palette[idx % palette.length]}}/>
   }
 }

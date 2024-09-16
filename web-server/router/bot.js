@@ -39,6 +39,18 @@ router.post("/update_bot", async (req, res) => {
   });
 });
 
+router.post("/delete_bot_image", async (req, res) => {
+  const { id } = req.body.data;
+  const query = `UPDATE bot SET image="" WHERE id=${id}`;
+  db.execute(query, async (err, rows) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log('봇 업뎃 완료');
+    res.json(true);
+  });
+});
+
 router.post("/delete_bot", (req, res) => {
   const {id} = req.body.data;
   const query = `DELETE FROM bot WHERE id=${id}`;
@@ -67,35 +79,32 @@ async function deleteModel(id) {
 }
 
 router.post("/bot_profile_image", upload.single('file'), (req, res) => {
-  const file = req.file; // 업로드된 파일 정보
-  // console.log('파일 정보:', file);
-  const filePath = file.path; // 파일 경로
-  let bot_id = file.originalname.split('_')[1]; // 파일 이름
+  const file = req.file;
+  const filePath = file.path;
+  let bot_id = file.originalname.split('_')[1]; // 파일 이름에 봇 id 넣어둠
 
-  // 파일 데이터를 읽어 BLOB로 저장
   fs.readFile(filePath, (err, fileData) => {
     if (err) {
       return res.status(500).json({ error: '파일 읽기 오류' });
     }
-
-    // SQLite에 BLOB 저장
+    const base64String = Buffer.from(fileData).toString('base64');
     const insertQuery = `UPDATE bot SET image=? WHERE id=${bot_id}`;
     db.execute(insertQuery, function (err, rows) {
       if (err) {
         console.log('저장 오류: ', err);
       }
       res.json(true);
-    }, [fileData]);
+    }, [`data:${file.mimetype};base64,${base64String}`]);
   });
 });
-router.post("/get_bot_image", (req, res) => {
-  const id = req.body.data;
-  const query = `SELECT image FROM bot WHERE id=${id}`;
-  db.select(query, (err, rows) => {
-    res.setHeader('Content-Disposition', `attachment; filename="bot_${id}"`);
-    res.setHeader('Content-Type', 'image/png');
-    res.send(rows[0].image);
-  });
-})
+// router.post("/get_bot_image", (req, res) => {
+//   const id = req.body.data;
+//   const query = `SELECT image FROM bot WHERE id=${id}`;
+//   db.select(query, (err, rows) => {
+//     res.setHeader('Content-Disposition', `attachment; filename="bot_${id}"`);
+//     res.setHeader('Content-Type', 'image/png');
+//     res.send(rows[0].image);
+//   });
+// })
 
 module.exports = router;

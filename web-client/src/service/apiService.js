@@ -49,27 +49,26 @@ const postFile = (url, formData) => {
   });
 };
 
-const postForGetFile = (url, content) => {
-  return new Promise((resolve) => {
-    fetch(`http://localhost:${config.SERVER_PORT}${url}`, {
-      method: "post",
-      headers: {
-        "content-type" : "application/json",
-      },
-      body: JSON.stringify({ data: content })
-    })
-    .then(res => res.blob())
-    .then(res => {
-      resolve(res);
-    });
-  });
-};
+// const postForGetFile = (url, content) => {
+//   return new Promise((resolve) => {
+//     fetch(`http://localhost:${config.SERVER_PORT}${url}`, {
+//       method: "post",
+//       headers: {
+//         "content-type" : "application/json",
+//       },
+//       body: JSON.stringify({ data: content })
+//     })
+//     .then(res => res.blob())
+//     .then(res => {
+//       resolve(res);
+//     });
+//   });
+// };
 
 const apiService = {
   get: get,
   post: post,
-  postFile: postFile,
-  postForGetFile: postForGetFile
+  postFile: postFile
 };
 
 export default apiService;
