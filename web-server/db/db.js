@@ -14,7 +14,8 @@ database.all(
     age INTEGER NULL,
     sex VARCHAR(10) NULL,
     mbti VARCHAR(10) NULL,
-    custom_character TEXT NULL
+    custom_character TEXT NULL,
+    image BLOB
   )`,
   [],
   (err, rows) => {
