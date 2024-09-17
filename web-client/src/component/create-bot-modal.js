@@ -27,7 +27,8 @@ const TopBar = styled.div`
   margin-bottom: 10px;
   margin-left: -40px;
   margin-right: -40px;
-  border-bottom: solid 1px gray;
+  // border-bottom: solid 1px gray;
+  box-shadow: 0 4px 8px -2px black;
   svg {
     width: 40px;
     cursor: pointer;

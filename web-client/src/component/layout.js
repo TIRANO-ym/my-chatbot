@@ -94,9 +94,7 @@ export default function Layout() {
     // }
     // setBotList(rows);
 
-    if (!selectedBot.id && rows.length) {
-      changeBot(rows[0]);
-    } else if (selectedBot.id && rows.length && !rows.find(r => r.id === selectedBot.id)) {
+    if (selectedBot.id && rows.length && !rows.find(r => r.id === selectedBot.id)) {
       setSelectedBot({});
     }
   };

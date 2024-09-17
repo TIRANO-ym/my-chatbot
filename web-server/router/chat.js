@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const customTone = require("../db/custom-tone.json");
 
 // const { default: ollama } = require('ollama');
 // const axios = require('axios');
@@ -38,8 +38,7 @@ router.post("/send_message", async (req, res) => {
     console.log('받은 메시지: ', reply);
     reply = trimReply(reply);
     reply = replaceItallicExpressions(reply);
-    // TODO: 말투 교정
-    // reply = something(reply);
+    reply = improveBotChatTone(reply);   // todo: 말투 교정
     res.json({ reply: reply });
   } catch (e) {
     res.json({ error: e });
@@ -75,6 +74,13 @@ function trimReply(str) {
 
 function replaceItallicExpressions(str) {
   return str.replace(/(\*[a-zA-Z ㄱ-ㅎㅏ-ㅣ가-힣]+\*){1,20}/gi, '');
+}
+
+function improveBotChatTone(str) {
+  for (let key of Object.keys(customTone)) {
+    str = str.replace(new RegExp(key, 'gi'), customTone[key]);
+  }
+  return str;
 }
 
 module.exports = router;
