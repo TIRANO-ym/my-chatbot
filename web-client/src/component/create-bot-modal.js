@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import ErrorMessage from "./error-component";
 import { EditIcon, DeleteIcon, XIcon, LoadingWrapper, Loading } from "./icon-component";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import { RadioGroup, Radio, Checkbox } from "./material-component";
 import apiService from "../service/apiService";
-import { modalStyles } from "./style-component";
+import { modalStyles } from "./common-style-component";
 
 const ModalWrapper = styled.div`
   width: 100%;
@@ -190,9 +190,6 @@ const ModalSubmitBtn = styled.div`
  * info: if 'update' mode, there is exist bot infos. { id, image, name, age, sex, mbti, custom_character }
 */
 export default function CreateBotModal({ mode, info, userInfo, onClose }) {
-  useEffect(() => {
-    console.log('모달 열림! 인자: ', {mode, info, onClose});
-  }, []);
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [deletePhoto, setDeletePhoto] = useState(false);
@@ -269,11 +266,9 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
       custom_character: custom_character,
       userInfo: userInfo
     };
-    console.log('입력한 모든 데이터들: ', dataset);
     let botId = info ? info.id : null;
     if (mode === 'create') {
       botId = await apiService.post('/bot/create_bot', dataset);
-      console.log('### 받은 봇 id: ', botId);
     } else {
       await apiService.post('/bot/update_bot', {...dataset, id: info.id});
     }

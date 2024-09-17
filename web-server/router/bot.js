@@ -16,12 +16,11 @@ router.get("/bot_list", (req, res) => {
 router.post("/create_bot", async (req, res) => {
   const { name, age, sex, mbti, custom_character, userInfo } = req.body.data;
   const query = `INSERT INTO bot (name, age, sex, mbti, custom_character) VALUES ("${name}", "${age}", "${sex}", "${mbti}", "${custom_character}")`;
-  console.log({query});
   db.execute(query, async (err, rows, insertedId) => {
     if (err) {
       console.log(err);
     }
-    console.log(`신규 봇 "${name}" DB에 추가 완료`, insertedId);
+    console.log(`신규 봇 "${name}" DB에 추가 완료. ID: `, insertedId);
     await createModel({ id: insertedId, name, age, sex, mbti, custom_character }, userInfo);
     createHistoryFile(insertedId);
     res.json(insertedId);
@@ -35,7 +34,6 @@ router.post("/update_bot", async (req, res) => {
     if (err) {
       console.log(err);
     }
-    console.log('봇 업뎃 완료');
     await createModel({ id, name, age, sex, mbti, custom_character }, userInfo);
     res.json(true);
   });
@@ -48,7 +46,7 @@ router.post("/delete_bot_image", async (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      console.log('봇 이미지 삭제 완료');
+      console.log('봇 이미지 삭제 완료. ID: ', id);
     }
     res.json(true);
   });
@@ -160,19 +158,6 @@ PARAMETER stop </s>`;
 
   // 3. 올라마 모델 생성
   const step3 = await execSync(`ollama create friend${botInfo.id} -f ../LLM/custom-model-files/${fileName}`);
-
-  // 4. 생성 확인
-  // await new Promise((resolve) => {
-  //   while(true) {
-  //     setTimeout(async () => {
-  //       const step4 = await execSync(`ollama list`);
-  //       console.log('### step4: ', step4);
-  //       if (step4) {
-  //         resolve(true);
-  //       }
-  //     }, 1000);
-  //   }
-  // })
   
   return true;
 }
@@ -205,19 +190,11 @@ router.post("/bot_profile_image", upload.single('file'), (req, res) => {
       if (err) {
         console.log('저장 오류: ', err);
       }
+      // todo: web-server/uploads 정리 필요
       res.json(true);
     }, [`data:${file.mimetype};base64,${base64String}`]);
   });
 });
-// router.post("/get_bot_image", (req, res) => {
-//   const id = req.body.data;
-//   const query = `SELECT image FROM bot WHERE id=${id}`;
-//   db.select(query, (err, rows) => {
-//     res.setHeader('Content-Disposition', `attachment; filename="bot_${id}"`);
-//     res.setHeader('Content-Type', 'image/png');
-//     res.send(rows[0].image);
-//   });
-// })
 
 function createHistoryFile(id) {
   fs.writeFile(`../DB/chat_history/bot_${id}`, JSON.stringify([]), (err) => {

@@ -4,7 +4,7 @@ import { EditIcon, DeleteIcon, XIcon, LoadingWrapper, Loading } from "./icon-com
 import { useState } from "react";
 import Modal from "react-modal";
 import apiService from "../service/apiService";
-import { modalStyles } from "./style-component";
+import { modalStyles } from "./common-style-component";
 
 const ModalWrapper = styled.div`
   width: 100%;

@@ -39,6 +39,7 @@ router.post("/user_profile_image", upload.single('file'), (req, res) => {
       if (err) {
         console.log('저장 오류: ', err);
       }
+      // todo: web-server/uploads 정리 필요
       res.json(true);
     }, [`data:${file.mimetype};base64,${base64String}`]);
   });

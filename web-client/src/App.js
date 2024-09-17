@@ -8,7 +8,6 @@ import reset from "styled-reset";
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <ProtectedRoute><Layout/></ProtectedRoute>,
     element: <Layout/>,
     children: [
       // {
@@ -16,15 +15,8 @@ const router = createBrowserRouter([
       //   element: <Chat/>
       // }
       // {
-      //   path: "profile",
-      //   element: <Profile/>
-      // }
     ]
   }
-  // {
-  //   path: "/login",
-  //   element: <Login/>
-  // },
 ]);
 
 const GlobalStyles = createGlobalStyle`

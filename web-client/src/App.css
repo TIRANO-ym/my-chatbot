@@ -19,12 +19,3 @@
 body {
   font-family: var(--font-nanumfont) !important;
 }
-
-.test {
-  color: rgb(170, 144, 202);
-  color: rgb(99, 80, 122);
-  cursor: default;
-  text-overflow: ellipsis;
-  display: initial;
-  grid-template-columns: 20% 80%;
-}

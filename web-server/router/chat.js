@@ -13,14 +13,14 @@ const openai = new OpenAI({
 
 router.get("/check_model_is_ready", (req, res) => {
   // custom learning you want
-  console.log('테스트 요청 수신...');
+  // console.log('테스트 요청 수신...');
   res.json(true);
 });
 
 router.post("/send_message", async (req, res) => {
   const { prevConversation, inputMessage, bot_id } = req.body.data;
-  console.log('지금 보낼 메시지: ', inputMessage);
-  console.log('과거 대화들: ', prevConversation);
+  console.log('보낼 메시지: ', inputMessage);
+  // console.log('과거 대화들: ', prevConversation);
 
   // FIXME: if use ollama library, response.message.content is always empty
   // const response = await ollama.chat({
@@ -36,9 +36,9 @@ router.post("/send_message", async (req, res) => {
   try {
     let reply = completion.choices[0].message.content;
     console.log('받은 메시지: ', reply);
-    reply = trimReply(reply);
-    reply = replaceItallicExpressions(reply);
-    reply = improveBotChatTone(reply);   // todo: 말투 교정
+    reply = trimReply(reply);                   // 응답 내용과 무관한 주석 제거
+    reply = replaceItallicExpressions(reply);   // Itallic 표현 제거
+    reply = improveBotChatTone(reply);          // 말투 교정
     res.json({ reply: reply });
   } catch (e) {
     res.json({ error: e });

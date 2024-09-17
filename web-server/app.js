@@ -28,12 +28,11 @@ const botRouter = require("./router/bot");
 const userRouter = require("./router/user");
 
 app.get('/', (req, res) => {
-  console.log('app.js에서 요청 수신!');
   res.json('Hello, Express');
 });
 
 app.listen(app.get('port'), () => {
-  console.log(app.get('port'), '번 포트에서 대기 중')
+  console.log(app.get('port'), '번 포트에서 대기 중');
 });
 
 app.use("/chat", chatRouter);

@@ -86,7 +86,6 @@ export default function Layout() {
 
   const getBotList = async () => {
     let rows = await apiService.get('/bot/bot_list');
-    console.log('봇리스트: ', rows);
     setBotList(rows);
     // for max length test
     // while (rows.length < 15) {

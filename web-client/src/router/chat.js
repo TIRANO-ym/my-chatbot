@@ -121,7 +121,6 @@ export default function Chat(props) {
       prevConversation: histories,
       bot_id: currentBotId
     });
-    console.log(response);
     setIsBotTalking(false);
     if (response.reply) {
       addHistory('system', response.reply);
@@ -157,8 +156,8 @@ export default function Chat(props) {
     await updateHistoryToServer();
     setCurrentBotId(new_bot_id);
     setHistories([]);
+    // 과거 대화 내역 가져오기
     const result = await historyService.get(new_bot_id);
-    // console.log('봇 히스토리 로딩: ', result);
     if (typeof result === 'string') {
       setErrMsg(result);
     }
@@ -167,10 +166,7 @@ export default function Chat(props) {
   }
 
   useEffect(() => {
-  }, []);
-
-  useEffect(() => {
-    console.log('bot 바뀜 ', props.bot_id);
+    // 봇 변경
     if (props.bot_id) {
       onChangeBot(props.bot_id);
     } else {
@@ -178,6 +174,7 @@ export default function Chat(props) {
       setInputMessage('');
       setErrMsg('');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.bot_id]);
 
   return (
