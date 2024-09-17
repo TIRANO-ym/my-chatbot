@@ -263,11 +263,11 @@ export default function UserSettingModal({ userInfo, onClose }) {
     onClose(true);
   };
 
-  return <Modal isOpen={true} style={modalStyles} onAfterClose={onClose}>
+  return <Modal isOpen={true} style={modalStyles}>
     <ModalWrapper>
       <TopBar>
         사용자 정보 수정
-        <XIcon onClick={onClose}/>
+        <XIcon onClick={() => onClose()}/>
       </TopBar>
       <PhotoWrapper>
         <PhotoUpload htmlFor="photo">

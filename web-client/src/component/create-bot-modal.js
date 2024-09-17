@@ -304,11 +304,11 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
     onClose(true);
   }
 
-  return <Modal isOpen={true} style={modalStyles} onAfterClose={onClose}>
+  return <Modal isOpen={true} style={modalStyles}>
     <ModalWrapper>
       <TopBar>
         { mode === 'create' ? '새 친구 봇 추가하기' : `${info.name} 수정하기`}
-        <XIcon onClick={onClose}/>
+        <XIcon onClick={() => onClose()}/>
       </TopBar>
       <PhotoWrapper>
         <PhotoUpload htmlFor="photo">
