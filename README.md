@@ -1,45 +1,3 @@
-# English: Making My Own Friend Bot (AI chat-bot)
-## PC Specification Warning
-* This project will drive the AI language model directly in localhost.
-  * 8GB or more of memory is recommended.
-* Therefore, free clouds typically has limited resource usage. So it is not suitable for upload and use on the cloud server.
-
-## Introduction to the Project
-* It's a web service what you can create your own friend bot and talk to it. (~~i'm only going to play with it locally, but~~)
-* When I set up a bot with the personality I want, the web server tunes the model and creates it.
-  * Name (Required), Age (Select), Gender (Select), MBTI (Select), Other Settings (Select)
-    * What are the other settings? → Model tuning by entering other advanced settings directly in text. (Example: You are a princess who living in the Middle Ages. Answer like a princess.)
-* If you enter your user information, you can tell your information to the chatbot in advance.
-  * Name (Required), Other Settings (Select)
-    * What are the other settings? → Enter other advanced settings directly in text. (Example: I like to play games while listening to music.)
-  * ~~Sometimes bots pretend not to know my name, but when they know my name and say something about why they pretend not to know my name, they finally call me by my name~~
-* Usually, the chatbot API, which is open for free, is a one-off conversation, but it stores and holds up to 1,000 recent conversation histories, so additional learning through conversation is also possible.
-  * ~~If you talk more than 1,000 times, bot'll forget about past. If you want bot to remember more, You'll modify the code to correct it~~
-* Preview
-  * ![Preview](https://github.com/TIRANO-ym/my-chatbot/blob/master/preview.png)
-
-## How to use a project
-### Step 1: Prepare
-1. If you clone a project, there are 4 folders: web-client, web-server, DB, LLM
-2. Enter the LLM folder.
-3. Open the "올라마 세팅과정 1.txt" file and do so.
-4. Open the "올라마 세팅과정 2 - 한국어 모델.txt" file and do so. **(It is for Korean).** Now, LLM is ready.
-5. Enter the DB folder.
-6. There is a "sqlite.exe" file. Runs it for install sqlite. (Or you can get it and install it directly from the SQLite web site.)
-### Step 2: Run web-client
-1. First, open window powdershell.
-2. Move to the web-client path of the project.
-3. Run command: "npm install"
-4. And run command: "npm start"
-### Step 3: Run web-server
-1. Move to the web-server path of the project.
-2. Run command: "npm install"
-3. And run command: "npm start"
-### Step 4: Let's use!
-* Now, you can access the localhost:3000 to add your own chat-bot friend.
-
----
-
 # 한국어: 나만의 친구 봇 만들기 (AI 챗봇)
 ## PC 사양 경고
 * 이 프로젝트는 AI 언어 모델을 로컬에서 직접 구동합니다.
@@ -81,3 +39,45 @@
 3. npm start 수행하면 준비 완료
 ### 4단계: 사용해보기
 * 이제 localhost:3000 으로 접속해서 나만의 챗봇을 추가하고 대화할 수 있습니다.
+
+---
+
+# English: Making My Own Friend Bot (AI chat-bot)
+## PC Specification Warning
+* This project will drive the AI language model directly in localhost.
+  * 8GB or more of memory is recommended.
+* Therefore, free clouds typically has limited resource usage. So it is not suitable for upload and use on the cloud server.
+
+## Introduction to the Project
+* It's a web service what you can create your own friend bot and talk to it. (~~i'm only going to play with it locally, but~~)
+* When I set up a bot with the personality I want, the web server tunes the model and creates it.
+  * Name (Required), Age (Select), Gender (Select), MBTI (Select), Other Settings (Select)
+    * What are the other settings? → Model tuning by entering other advanced settings directly in text. (Example: You are a princess who living in the Middle Ages. Answer like a princess.)
+* If you enter your user information, you can tell your information to the chatbot in advance.
+  * Name (Required), Other Settings (Select)
+    * What are the other settings? → Enter other advanced settings directly in text. (Example: I like to play games while listening to music.)
+  * ~~Sometimes bots pretend not to know my name, but when they know my name and say something about why they pretend not to know my name, they finally call me by my name~~
+* Usually, the chatbot API, which is open for free, is a one-off conversation, but it stores and holds up to 1,000 recent conversation histories, so additional learning through conversation is also possible.
+  * ~~If you talk more than 1,000 times, bot'll forget about past. If you want bot to remember more, You'll modify the code to correct it~~
+* Preview
+  * ![Preview](https://github.com/TIRANO-ym/my-chatbot/blob/master/preview.png)
+
+## How to use a project
+### Step 1: Prepare
+1. If you clone a project, there are 4 folders: web-client, web-server, DB, LLM
+2. Enter the LLM folder.
+3. Open the "올라마 세팅과정 1.txt" file and do so.
+4. Open the "올라마 세팅과정 2 - 한국어 모델.txt" file and do so. **(It is for Korean).** Now, LLM is ready.
+5. Enter the DB folder.
+6. There is a "sqlite.exe" file. Runs it for install sqlite. (Or you can get it and install it directly from the SQLite web site.)
+### Step 2: Run web-client
+1. First, open window powdershell.
+2. Move to the web-client path of the project.
+3. Run command: "npm install"
+4. And run command: "npm start"
+### Step 3: Run web-server
+1. Move to the web-server path of the project.
+2. Run command: "npm install"
+3. And run command: "npm start"
+### Step 4: Let's use!
+* Now, you can access the localhost:3000 to add your own chat-bot friend.
