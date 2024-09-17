@@ -178,11 +178,11 @@ export default function Chat(props) {
         <History>
           {
             histories.map((h, i) => {
-              return h.role === 'system' ? <BotSaid key={i}>{h.content}</BotSaid>
-                              : <ISaid key={i}>{h.content}</ISaid>
+              return h.role === 'system' ? <BotSaid className="chat-bubble" key={i}>{h.content}</BotSaid>
+                              : <ISaid className="chat-bubble" key={i}>{h.content}</ISaid>
             })
           }
-          { isBotTalking ? <BotSaid><BotTalkingLoader/></BotSaid> : null }
+          { isBotTalking ? <BotSaid className="chat-bubble"><BotTalkingLoader/></BotSaid> : null }
         </History>
         { isBotLoading ? <BatteryLoader/> : null }
       </HistoryBox>

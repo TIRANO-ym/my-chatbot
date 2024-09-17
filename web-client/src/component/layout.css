@@ -1,0 +1,40 @@
+.hiddenMenu {
+  display: none;
+  position: absolute;
+  width: calc(100% - 100px);
+  height: fit-content;
+  margin-top: 5px;
+  svg {
+    width: 40px;
+    cursor: pointer;
+  }
+  svg:hover {
+    opacity: 0.8;
+  }
+}
+.leftMenu {
+  display: flex;
+}
+
+@media (max-width: 600px) {
+  .hiddenMenu {
+    display: initial;
+  }
+  .leftMenu {
+    display: none !important;
+  }
+  .show {
+    display: flex !important;
+    position: absolute;
+    z-index: 100;
+    background-color: rgb(41, 41, 41);
+    width: calc(100% - 100px) !important;
+    height: calc(100% - 100px);
+  }
+  .layout-wrapper {
+    grid-template-columns: 100% !important;
+    .chat-bubble {
+      max-width: 90% !important;
+    }
+  }
+}

@@ -1,9 +1,10 @@
 // import { Outlet } from "react-router-dom";
+import './layout.css';
 import styled from "styled-components";
 import Chat from "../router/chat";
 import { useEffect, useState } from "react";
 import apiService from "../service/apiService";
-import { BotProfile, EditIcon, PlusIcon } from "./icon-component";
+import { BotProfile, EditIcon, MenuIcon, PlusIcon } from "./icon-component";
 import CreateBotModal from "./create-bot-modal";
 import Profile from "../router/profile";
 
@@ -77,6 +78,7 @@ export default function Layout() {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [showHiddenMenu, setShowHiddenMenu] = useState(false);
 
   const changeBot = (bot) => {
     setSelectedBot({id: bot.id, name: bot.name});
@@ -123,7 +125,11 @@ export default function Layout() {
     if (isUpdated) {
       getBotList();
     }
-  }
+  };
+
+  const clickShowLeftMenu = () => {
+    setShowHiddenMenu(prev => !prev);
+  };
 
   useEffect(() => {
     getBotList();
@@ -139,8 +145,12 @@ export default function Layout() {
   //   }
   // }
   return (
-    <Wrapper>
-      <Column>
+    <>
+    <div className='hiddenMenu'>
+      <MenuIcon onClick={clickShowLeftMenu}/>
+    </div>
+    <Wrapper className='layout-wrapper'>
+      <Column className={`leftMenu${showHiddenMenu ? ' show' : ''}`}>
         <BotList>
           {
             botList.map((data, i) => {
@@ -164,5 +174,6 @@ export default function Layout() {
       <Chat bot_id={selectedBot.id} bot_name={selectedBot.name}/>
       { isModalOpen ? <CreateBotModal {...modalData} onClose={closeModal}/> : null}
     </Wrapper>
+    </>
   );
 }
