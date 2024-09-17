@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import apiService from "../service/apiService";
 import { BotProfile, EditIcon, PlusIcon } from "./icon-component";
 import CreateBotModal from "./create-bot-modal";
-import {Buffer} from 'buffer';
+import Profile from "../router/profile";
 
 const Wrapper = styled.div`
   display: grid;
@@ -15,6 +15,12 @@ const Wrapper = styled.div`
   width: 100%;
   max-width: 1500px;
   height: 100%;
+`;
+
+const Column = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const BotList = styled.div`
@@ -65,28 +71,49 @@ const BotItem = styled.div`
 `;
 
 export default function Layout() {
+  const [userInfo, setUserInfo] = useState({});
   const [botList, setBotList] = useState([]);
-  const [selectedBot, setSelectedBot] = useState(1);
+  const [selectedBot, setSelectedBot] = useState({});
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
 
-  const changeBot = (bot_id) => {
-    setSelectedBot(bot_id);
+  const changeBot = (bot) => {
+    setSelectedBot({id: bot.id, name: bot.name});
   };
 
   const getBotList = async () => {
     let rows = await apiService.get('/bot/bot_list');
     console.log('봇리스트: ', rows);
     setBotList(rows);
+    // for max length test
+    // while (rows.length < 15) {
+    //   rows.push({ id: rows.length + 100, name: 'dummy', image: '' });
+    // }
+    // setBotList(rows);
+
+    if (!selectedBot.id && rows.length) {
+      changeBot(rows[0]);
+    } else if (selectedBot.id && rows.length && !rows.find(r => r.id === selectedBot.id)) {
+      setSelectedBot({});
+    }
+  };
+
+  const getUserInfo = async () => {
+    let userInfo = await apiService.post('/user/getUserInfo', 1);   // user 하나 임시
+    setUserInfo(userInfo);
   };
 
   const openModal = (e, data) => {
     e.stopPropagation();
     if (data) {
-      setModalData({ mode: 'update', info: data })
+      setModalData({ mode: 'update', info: data, userInfo: {
+        id: userInfo.id, name: userInfo.name, custom_character: userInfo.custom_character
+      } })
     } else {
-      setModalData({ mode: 'create' });
+      setModalData({ mode: 'create', userInfo: {
+        id: userInfo.id, name: userInfo.name, custom_character: userInfo.custom_character
+      } });
     }
     setModalOpen(true);
   };
@@ -100,6 +127,7 @@ export default function Layout() {
 
   useEffect(() => {
     getBotList();
+    getUserInfo();
   }, [])
 
   // const navigate = useNavigate();
@@ -112,25 +140,28 @@ export default function Layout() {
   // }
   return (
     <Wrapper>
-      <BotList>
-        {
-          botList.map((data, i) => {
-            return <BotItem
-              className={selectedBot === data.id ? 'selected' : ''}
-              key={`bot_${i}`}
-              onClick={() => changeBot(data.id)}
-            >
-              <BotProfile src={data.image} idx={i}/>
-              <p className="name">{data.name}</p>
-              <EditIcon onClick={(e) => openModal(e, data)}/>
-            </BotItem>
-          })
-        }
-        <BotItem className="new_bot" onClick={(e) => openModal(e)}>
-          <PlusIcon/> 새 친구 봇 추가
-        </BotItem>
-      </BotList>
-      <Chat bot_id={selectedBot}/>
+      <Column>
+        <BotList>
+          {
+            botList.map((data, i) => {
+              return <BotItem
+                className={selectedBot.id === data.id ? 'selected' : ''}
+                key={`bot_${i}`}
+                onClick={() => changeBot(data)}
+              >
+                <BotProfile src={data.image} idx={i}/>
+                <p className="name">{data.name}</p>
+                <EditIcon onClick={(e) => openModal(e, data)}/>
+              </BotItem>
+            })
+          }
+          { botList.length < 15 ? <BotItem className="new_bot" onClick={(e) => openModal(e)}>
+            <PlusIcon/> 새 친구 봇 추가
+          </BotItem> : null}
+        </BotList>
+        <Profile userInfo={userInfo} onUserUpdated={getUserInfo}/>
+      </Column>
+      <Chat bot_id={selectedBot.id} bot_name={selectedBot.name}/>
       { isModalOpen ? <CreateBotModal {...modalData} onClose={closeModal}/> : null}
     </Wrapper>
   );

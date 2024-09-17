@@ -14,7 +14,7 @@ router.get("/bot_list", (req, res) => {
 });
 
 router.post("/create_bot", async (req, res) => {
-  const { name, age, sex, mbti, custom_character } = req.body.data;
+  const { name, age, sex, mbti, custom_character, userInfo } = req.body.data;
   const query = `INSERT INTO bot (name, age, sex, mbti, custom_character) VALUES ("${name}", "${age}", "${sex}", "${mbti}", "${custom_character}")`;
   console.log({query});
   db.execute(query, async (err, rows, insertedId) => {
@@ -22,21 +22,21 @@ router.post("/create_bot", async (req, res) => {
       console.log(err);
     }
     console.log(`신규 봇 "${name}" DB에 추가 완료`, insertedId);
-    await createModel({ name, age, sex, mbti, custom_character }, insertedId);
+    await createModel({ id: insertedId, name, age, sex, mbti, custom_character }, userInfo);
     createHistoryFile(insertedId);
     res.json(insertedId);
   });
 });
 
 router.post("/update_bot", async (req, res) => {
-  const { id, name, age, sex, mbti, custom_character } = req.body.data;
+  const { id, name, age, sex, mbti, custom_character, userInfo } = req.body.data;
   const query = `UPDATE bot SET name="${name}", age="${age}", sex="${sex}", mbti="${mbti}", custom_character="${custom_character}" WHERE id=${id}`;
   db.execute(query, async (err, rows) => {
     if (err) {
       console.log(err);
     }
     console.log('봇 업뎃 완료');
-    await createModel({ name, age, sex, mbti, custom_character }, id);
+    await createModel({ id, name, age, sex, mbti, custom_character }, userInfo);
     res.json(true);
   });
 });
@@ -47,8 +47,9 @@ router.post("/delete_bot_image", async (req, res) => {
   db.execute(query, async (err, rows) => {
     if (err) {
       console.log(err);
+    } else {
+      console.log('봇 이미지 삭제 완료');
     }
-    console.log('봇 업뎃 완료');
     res.json(true);
   });
 });
@@ -66,19 +67,19 @@ router.post("/delete_bot", (req, res) => {
   })
 });
 
-async function createModel(data, id) {
+async function createModel(botInfo, userInfo) {
   // 1. 모델 파일 내용 커스텀
-  const fileName = `CustomModel_${id}`;
+  const fileName = `CustomModel_${botInfo.id}`;
 
   let temperature = 0;
   let isYoung = false;
-  if (data.age && data.age < 20) {
+  if (botInfo.age && botInfo.age < 20) {
     temperature += 1;
     isYoung = true;
   }
-  let ageInfo = data.age ? `${data.age}-year-old` : '';
-  let sexInfo = data.sex ? (
-    data.sex === 'f' ? (isYoung ? 'girl' : 'woman')
+  let ageInfo = botInfo.age ? `${botInfo.age}-year-old` : '';
+  let sexInfo = botInfo.sex ? (
+    botInfo.sex === 'f' ? (isYoung ? 'girl' : 'woman')
     : (isYoung ? 'boy' : 'man')
   ) : '';
   if (ageInfo && sexInfo) {
@@ -86,27 +87,27 @@ async function createModel(data, id) {
   }
 
   let personality = '';
-  if (data.mbti) {
-    if (data.mbti[0] === 'e') {
+  if (botInfo.mbti) {
+    if (botInfo.mbti[0] === 'e') {
       personality += `You have a lively personality.\n`;
     } else {
       personality += `You have a timid personality. Don't speak much.\n`;
     }
-    if (data.mbti[1] === 'n') {
+    if (botInfo.mbti[1] === 'n') {
       personality += `You have a lot of imagination.\n`;
       temperature += 1;
     } else {
       personality += `You are thorough and precise.\n`;
       temperature -= 1;
     }
-    if (data.mbti[2] === 'f') {
+    if (botInfo.mbti[2] === 'f') {
       personality += `You have a lot of sensitivity. Empathize and encourage to user.\n`;
       temperature += 1;
     } else {
       personality += `You are logical and analytical.\n`;
       temperature -= 1;
     }
-    if (data.mbti[3] === 'p') {
+    if (botInfo.mbti[3] === 'p') {
       personality += `You are flexible.\n\n`;
       temperature += 1;
     } else {
@@ -116,6 +117,15 @@ async function createModel(data, id) {
   }
 
   if (temperature < 0) temperature = 0;
+
+  let nameCustom = '';
+  const checkCondition = /Your name is .+\.\s*/gi;
+  if (botInfo.custom_character && checkCondition.test(botInfo.custom_character)) {
+    nameCustom = botInfo.custom_character.match(/Your name is .+\./)[0];
+    botInfo.custom_character = botInfo.custom_character.replace(checkCondition, '');
+  } else {
+    nameCustom = `Your name is ${botInfo.name}.`;
+  }
 
   const content = `FROM ggml-model-Q5_K_M.gguf
 
@@ -128,14 +138,15 @@ TEMPLATE """{{- if .System }}
 """
 
 SYSTEM """
-Your name is ${data.name}.
+${nameCustom}
 ${(ageInfo || sexInfo) ? `You are a ${ageInfo}${sexInfo}.` : ''}
 You are my friend. Answer like a friend.${personality ? `\n${personality}` : ''}
-${data.custom_character ? data.custom_character + '\n' : ''}
-Don't speak something i didn't even ask.
+${botInfo.custom_character ? botInfo.custom_character + '\n' : ''}
 Don't use honorifics. Speak informally.
 Speak in Korean only.
-Speak briefly in less than 5 sentences.
+Answer within 30 characters.
+
+User name is ${userInfo.name}.${userInfo.custom_character ? `\n${userInfo.custom_character}` : ''}
 """
 
 PARAMETER temperature ${temperature}
@@ -144,11 +155,9 @@ PARAMETER stop </s>`;
 
   // 2. 모델 파일 작성
   const step2 = await fs.writeFileSync(`../LLM/custom-model-files/${fileName}`, content);
-  console.log('### step2: ', step2);
 
   // 3. 올라마 모델 생성
-  const step3 = await execSync(`ollama create friend${id} -f ../LLM/custom-model-files/${fileName}`);
-  console.log('### step3: ', step3);
+  const step3 = await execSync(`ollama create friend${botInfo.id} -f ../LLM/custom-model-files/${fileName}`);
 
   // 4. 생성 확인
   // await new Promise((resolve) => {

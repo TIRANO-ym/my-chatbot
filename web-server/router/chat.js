@@ -74,7 +74,7 @@ function trimReply(str) {
 }
 
 function replaceItallicExpressions(str) {
-  return str.replace(/(\*[a-zA-Z ]+\*){1,20}/gi, '');
+  return str.replace(/(\*[a-zA-Z ㄱ-ㅎㅏ-ㅣ가-힣]+\*){1,20}/gi, '');
 }
 
 module.exports = router;

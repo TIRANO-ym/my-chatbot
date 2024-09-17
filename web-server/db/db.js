@@ -20,7 +20,7 @@ database.all(
   [],
   (err, rows) => {
     if (err) {
-      console.log('테이블 생성 에러: ', err);
+      console.log('bot 테이블 생성 에러: ', err);
     } else {
       // 첫 생성 시 default bot 추가
       // database.all("INSERT INTO bot (name) SELECT '기본 친구' WHERE NOT EXISTS (SELECT * FROM bot)", [], (err, rows) => {
@@ -28,6 +28,28 @@ database.all(
       //     console.log('insert default data error: ', err);
       //   }
       // })
+    }
+  }
+);
+
+database.all(
+  `CREATE TABLE if not exists user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    custom_character TEXT NULL,
+    image BLOB
+  )`,
+  [],
+  (err, rows) => {
+    if (err) {
+      console.log('user 테이블 생성 에러: ', err);
+    } else {
+      // 첫 생성 시 default user 추가
+      database.all("INSERT INTO user (name) SELECT '사용자' WHERE NOT EXISTS (SELECT * FROM user)", [], (err, rows) => {
+        if (err) {
+          console.log('insert default user error: ', err);
+        }
+      })
     }
   }
 );

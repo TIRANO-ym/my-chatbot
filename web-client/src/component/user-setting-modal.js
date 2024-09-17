@@ -172,12 +172,6 @@ const ModalSubmitBtn = styled.div`
       margin-right: 10px;
     }
   }
-  .delete {
-    background-color: tomato;
-    color: white;
-    font-weight: bold;
-    font-size: 1.1rem;
-  }
   .errMsg {
     width: fit-content;
     padding: 0 20px;
@@ -185,12 +179,11 @@ const ModalSubmitBtn = styled.div`
 `;
 
 /*
- * mode: 'create' or 'update'
- * info: if 'update' mode, there is exist bot infos. { id, image, name, age, sex, mbti, custom_character }
+ * userInfo: { id, image, name, custom_character }
 */
-export default function CreateBotModal({ mode, info, userInfo, onClose }) {
+export default function UserSettingModal({ userInfo, onClose }) {
   useEffect(() => {
-    console.log('모달 열림! 인자: ', {mode, info, onClose});
+    console.log('모달 열림! 인자: ', {userInfo, onClose});
   }, []);
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
@@ -200,12 +193,8 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   const [errMsg, setErrMsg] = useState('');
 
   // --------- 사용자 입력 폼 ---------
-  const [inputName, setInputName] = useState(info && info.name ? info.name : '');
-  const [selectAge, setSelectAge] = useState(info && info.age ? info.age : '');
-  const [selectSex, setSelectSex] = useState(info && info.sex ? info.sex : '');
-  const [isMbtiFlag, setMbtiFlag] = useState(info && !info.mbti ? false : true);
-  const [selectMbti, setSelectMbti] = useState(info && info.mbti ? info.mbti.split('') : ['i', 's', 't', 'j']);
-  const [custom_character, setCustomCharacter] = useState(info && info.custom_character ? info.custom_character : '');
+  const [inputName, setInputName] = useState(userInfo.name ? userInfo.name : '');
+  const [custom_character, setCustomCharacter] = useState(userInfo.custom_character ? userInfo.custom_character : '');
   // ---------------------------------
 
   const handleInputName = (e) => {
@@ -215,15 +204,6 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
     }
     setInputName(txt);
   }
-  const handleSelectAge = (e) => {
-    setSelectAge(e.target.value);
-  };
-  const handleSelectMbti = (idx, value) => {
-    setSelectMbti(prev => {
-      prev[idx] = value;
-      return [...prev];
-    });
-  };
   const handleCustomChar = (e) => {
     setCustomCharacter(e.target.value.replace(/[@#$%\^&\-_{}:"<>\/\?]/gi, ''));
   }
@@ -256,57 +236,37 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   const onSubmit = async() => {
     if (isUpdating) return;
     if (!inputName) {
-      setErrMsg('멋진 이름을 지어주세요!');
+      setErrMsg('이름을 입력해주세요!');
       return;
     }
     setIsUpdating(true);
     const dataset = {
+      id: userInfo.id,
       name: inputName,
-      age: selectAge,
-      sex: selectSex,
-      mbti: isMbtiFlag ? selectMbti.join('') : '',
-      custom_character: custom_character,
-      userInfo: userInfo
+      custom_character: custom_character
     };
-    console.log('입력한 모든 데이터들: ', dataset);
-    let botId = info ? info.id : null;
-    if (mode === 'create') {
-      botId = await apiService.post('/bot/create_bot', dataset);
-      console.log('### 받은 봇 id: ', botId);
-    } else {
-      await apiService.post('/bot/update_bot', {...dataset, id: info.id});
-    }
+    console.log('입력한 모든 데이터들: ', );
+    await apiService.post('/user/update_user', dataset);
 
     // 이미지 파일 별도 처리
     if (deletePhoto) {
-      await apiService.post('/bot/delete_bot_image', {id: botId});
+      await apiService.post('/user/delete_user_image', {id: userInfo.id});
     } else if (editPhoto) {
-      const renamedFile = new File([editPhoto], `bot_${botId}`, {
+      const renamedFile = new File([editPhoto], `user_${userInfo.id}`, {
         type: editPhoto.type,
         lastModified: editPhoto.lastModified,
       });
       const formData = new FormData();
       formData.append('file', renamedFile);
-      await apiService.postFile('/bot/bot_profile_image', formData);
+      await apiService.postFile('/user/user_profile_image', formData);
     }
     onClose(true);
   };
-  const deleteClick = async() => {
-    if (isUpdating) return;
-    const ok = window.confirm(`"${info.name}" 봇을 정말 삭제할건가요?`);
-    if (!ok) return;
-    const finallyOk = window.confirm('봇과 기존 대화 내역까지 모두 삭제되며 이는 복구할 수 없습니다.\n정말 삭제할까요?');
-    if (!finallyOk) return;
-
-    setIsUpdating(true);
-    await apiService.post('/bot/delete_bot', {id: info.id});
-    onClose(true);
-  }
 
   return <Modal isOpen={true} style={modalStyles} onAfterClose={onClose}>
     <ModalWrapper>
       <TopBar>
-        { mode === 'create' ? '새 친구 봇 추가하기' : `${info.name} 수정하기`}
+        사용자 정보 수정
         <XIcon onClick={onClose}/>
       </TopBar>
       <PhotoWrapper>
@@ -314,8 +274,8 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
           <div className="phoho-edit-options">
             <EditIcon/> <DeleteIcon onClick={onPhotoDelete}/>
           </div>
-          {(!deletePhoto && (editPhoto || info?.image)) ? (
-            <Photo src={(editPhotoUrl || info?.image)} />
+          {(!deletePhoto && (editPhoto || userInfo.image)) ? (
+            <Photo src={(editPhotoUrl || userInfo.image)} />
           ) : (
             <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path clipRule="evenodd" fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
@@ -334,71 +294,9 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
         <ContentField><Input type="text" value={inputName} onChange={handleInputName} /></ContentField>
       </Row>
       <Row>
-        <TextLabel>나이대</TextLabel>
-        <ContentField>
-          <SelectBox
-            onChange={handleSelectAge} value={selectAge}
-          >
-            <option value={''}>설정하지 않음</option>
-            <option value={'10'}>10대</option>
-            <option value={'20'}>20대</option>
-            <option value={'30'}>30대</option>
-          </SelectBox>
-        </ContentField>
-      </Row>
-      <Row>
-        <TextLabel>성별</TextLabel>
-        <ContentField>
-          <RadioGroup value={selectSex} onChange={setSelectSex}>
-            <Radio name="option" value={''} defaultChecked>설정하지 않음</Radio>
-            <Radio name="option" value={'m'}>남자</Radio>
-            <Radio name="option" value={'f'}>여자</Radio>
-          </RadioGroup>
-        </ContentField>
-      </Row>
-      <Row>
-        <TextLabel>MBTI</TextLabel>
-        <ContentField>
-          <Checkbox checked={isMbtiFlag} onChange={setMbtiFlag}>
-            사용하기
-          </Checkbox>
-        </ContentField>
-      </Row>
-      {isMbtiFlag ? <Row style={{marginTop: '-20px'}}>
-        <TextLabel></TextLabel>
-        <ContentField>
-          <MbtiSelectWrapper>
-            <SelectBox style={{textAlign: 'center'}}
-              onChange={(e) => {handleSelectMbti(0, e.target.value)}} value={selectMbti[0]}
-            >
-              <option value={'i'}>I</option>
-              <option value={'e'}>E</option>
-            </SelectBox>
-            <SelectBox style={{textAlign: 'center'}}
-              onChange={(e) => {handleSelectMbti(1, e.target.value)}} value={selectMbti[1]}
-            >
-              <option value={'s'}>S</option>
-              <option value={'n'}>N</option>
-            </SelectBox>
-            <SelectBox style={{textAlign: 'center'}}
-              onChange={(e) => {handleSelectMbti(2, e.target.value)}} value={selectMbti[2]}
-            >
-              <option value={'t'}>T</option>
-              <option value={'f'}>F</option>
-            </SelectBox>
-            <SelectBox style={{textAlign: 'center'}}
-              onChange={(e) => {handleSelectMbti(3, e.target.value)}} value={selectMbti[3]}
-            >
-              <option value={'j'}>J</option>
-              <option value={'p'}>P</option>
-            </SelectBox>
-          </MbtiSelectWrapper>
-        </ContentField>
-      </Row> : null}
-      <Row>
         <TextLabel>기타 설정</TextLabel>
         <ContentField>
-          <TextArea value={custom_character} onChange={handleCustomChar} placeholder="그 외 설정하고 싶은 성격이나 특징을 직접 입력해주세요.&#10;한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!&#10;* 예시 1: 너는 중세 시대에 살고 있는 공주님이야. 공주님 처럼 대답해줘.&#10;* 예시 2: You are a princess living in the Middle Ages. Answer like a princess."/>
+          <TextArea value={custom_character} onChange={handleCustomChar} placeholder="그 외 친구들이 알아야 할 나의 성격이나 특징을 직접 입력해주세요.&#10;한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!&#10;* 예시 1: 나는 음악 듣는 걸 좋아해. 내 취미는 노래를 들으면서 게임을 하는거야.&#10;* 예시 2: I like listening to music. My hobby is playing games while listening to songs."/>
         </ContentField>
       </Row>
     </ModalWrapper>
@@ -406,13 +304,9 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
     <ModalSubmitBtn>
       <ErrorMessage message={errMsg}/>
       <button className="update" disabled={isUpdating} onClick={onSubmit}>{
-        isUpdating ? <LoadingWrapper><p>모델 생성 중... </p><Loading/></LoadingWrapper>
-                  : (mode === 'create') ? '생성' : '수정'
+        isUpdating ? <LoadingWrapper><p>저장 중... </p><Loading/></LoadingWrapper>
+                  : '저장'
       }</button>
-      {mode === 'update' ? <button className="delete" disabled={isUpdating} onClick={deleteClick}>{
-        isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
-                  : '삭제'
-      }</button> : null}
     </ModalSubmitBtn>
   </Modal>;
 }

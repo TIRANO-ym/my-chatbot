@@ -65,17 +65,20 @@ const MessageBox = styled.div`
 const InputArea = styled.textarea`
   width: 100%;
   height: 100%;
-  border: solid 1px gray;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0);
+  border: 0;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.08);
   resize: none;
   color: white;
   padding: 20px;
   font-size: 1.1rem;
   font-family: var(--font-nanumfont);
-  &: focus {
+  &:focus {
     outline: none;
-    border: solid 2px rgb(148, 148, 148);
+    background-color: rgba(255, 255, 255, 0.07);
+  }
+  &::placeholder {
+    color: gray;
   }
 `;
 
@@ -160,7 +163,13 @@ export default function Chat(props) {
 
   useEffect(() => {
     console.log('bot 바뀜 ', props.bot_id);
-    onChangeBot(props.bot_id);
+    if (props.bot_id) {
+      onChangeBot(props.bot_id);
+    } else {
+      setHistories([]);
+      setInputMessage('');
+      setErrMsg('');
+    }
   }, [props.bot_id]);
 
   return (
@@ -179,7 +188,10 @@ export default function Chat(props) {
       </HistoryBox>
       {errMsg ? <ErrorMessage>{errMsg}</ErrorMessage> : null}
       <MessageBox>
-        <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}/>
+        <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}
+          placeholder={props.bot_name ? `${props.bot_name}에게 메시지 보내기` : '나만의 친구 봇을 추가해서 대화를 시작해보세요!'}
+          disabled={!props.bot_id}
+        />
       </MessageBox>
     </Wrapper>
   );
