@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: #00000030;
   .name {
     display: block;
     width: 90%;

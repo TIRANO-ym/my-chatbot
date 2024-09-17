@@ -6,7 +6,9 @@ const FieldSet = styled.fieldset`
   width: 100%;
   .radio_option{
     input {
-      margin-right: 10px;
+      margin-right: 16px;
+      accent-color: rgb(104, 62, 156);
+      transform: scale(1.5);
     }
     margin-right: 10%;
   }
@@ -40,7 +42,10 @@ export function RadioGroup({ label, children, ...rest }) {
 }
 
 const CheckBoxInput = styled.input`
-  margin-right: 10px;
+  margin-left: 5px;
+  margin-right: 16px;
+  accent-color: rgb(104, 62, 156);
+  transform: scale(1.5);
 `;
 
 export function Checkbox({ children, disabled, checked, onChange }) {

@@ -96,24 +96,24 @@ const ContentField = styled.div`
   width: 80%;
 `;
 const Input = styled.input`
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #00000070;
   width: 100%;
   font-size: 1.1rem;
   border-radius: 10px;
-  border: solid 1px gray;
+  border: 0;
   height: 30px;
   padding: 0px 10px;
   color: white;
 `;
 const SelectBox = styled.select`
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #00000070;
   color: white;
   width: 100%;
   font-size: 1.1rem;
   height: 30px;
-  padding: 0px 5px;
+  padding: 0px 10px;
   border-radius: 10px;
-  border: solid 1px gray;
+  border: 0;
   option {
     color: black;
     font-size: 1rem;
@@ -130,8 +130,8 @@ const TextArea = styled.textarea`
   overflow-y: auto;
   resize: none;
   border-radius: 10px;
-  border: solid 1px gray;
-  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+  background-color: #00000070;
   color: white;
   padding: 10px;
   font-family: var(--font-nanumfont);

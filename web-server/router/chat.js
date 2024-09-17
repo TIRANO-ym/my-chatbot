@@ -54,7 +54,7 @@ function trimReply(str) {
   if (idx !== -1) {
     str = str.slice(0, idx);
   }
-  idx = str.indexOf(' Human:');
+  idx = str.indexOf('Human:');
   if (idx !== -1) {
     str = str.slice(0, idx);
   }
@@ -62,7 +62,7 @@ function trimReply(str) {
   if (idx !== -1) {
     str = str.slice(0, idx);
   }
-  idx = str.indexOf(' Assistant:');
+  idx = str.indexOf('Assistant:');
   if (idx !== -1) {
     str = str.slice(0, idx);
   }

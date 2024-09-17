@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import ErrorMessage from "./error-component";
 import { EditIcon, DeleteIcon, XIcon, LoadingWrapper, Loading } from "./icon-component";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
-import { RadioGroup, Radio, Checkbox } from "./material-component";
 import apiService from "../service/apiService";
 import { modalStyles } from "./style-component";
 
@@ -27,7 +26,8 @@ const TopBar = styled.div`
   margin-bottom: 10px;
   margin-left: -40px;
   margin-right: -40px;
-  border-bottom: solid 1px gray;
+  // border-bottom: solid 1px gray;
+  box-shadow: 0 4px 8px -2px black;
   svg {
     width: 40px;
     cursor: pointer;
@@ -95,33 +95,14 @@ const ContentField = styled.div`
   width: 80%;
 `;
 const Input = styled.input`
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #00000070;
   width: 100%;
   font-size: 1.1rem;
   border-radius: 10px;
-  border: solid 1px gray;
+  border: 0;
   height: 30px;
   padding: 0px 10px;
   color: white;
-`;
-const SelectBox = styled.select`
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  width: 100%;
-  font-size: 1.1rem;
-  height: 30px;
-  padding: 0px 5px;
-  border-radius: 10px;
-  border: solid 1px gray;
-  option {
-    color: black;
-    font-size: 1rem;
-  }
-`;
-const MbtiSelectWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 10px;
 `;
 const TextArea = styled.textarea`
   width: 100%;
@@ -129,8 +110,8 @@ const TextArea = styled.textarea`
   overflow-y: auto;
   resize: none;
   border-radius: 10px;
-  border: solid 1px gray;
-  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+  background-color: #00000070;
   color: white;
   padding: 10px;
   font-family: var(--font-nanumfont);
@@ -182,9 +163,6 @@ const ModalSubmitBtn = styled.div`
  * userInfo: { id, image, name, custom_character }
 */
 export default function UserSettingModal({ userInfo, onClose }) {
-  useEffect(() => {
-    console.log('모달 열림! 인자: ', {userInfo, onClose});
-  }, []);
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [deletePhoto, setDeletePhoto] = useState(false);
@@ -245,7 +223,6 @@ export default function UserSettingModal({ userInfo, onClose }) {
       name: inputName,
       custom_character: custom_character
     };
-    console.log('입력한 모든 데이터들: ', );
     await apiService.post('/user/update_user', dataset);
 
     // 이미지 파일 별도 처리

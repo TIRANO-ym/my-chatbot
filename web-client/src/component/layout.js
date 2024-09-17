@@ -80,8 +80,8 @@ export default function Layout() {
   const [modalData, setModalData] = useState(null);
   const [showHiddenMenu, setShowHiddenMenu] = useState(false);
 
-  const changeBot = (bot) => {
-    setSelectedBot({id: bot.id, name: bot.name});
+  const changeBot = (bot, idx) => {
+    setSelectedBot({id: bot.id, name: bot.name, image: bot.image, idx: idx});
   };
 
   const getBotList = async () => {
@@ -155,7 +155,7 @@ export default function Layout() {
               return <BotItem
                 className={selectedBot.id === data.id ? 'selected' : ''}
                 key={`bot_${i}`}
-                onClick={() => changeBot(data)}
+                onClick={() => changeBot(data, i)}
               >
                 <BotProfile src={data.image} idx={i}/>
                 <p className="name">{data.name}</p>
@@ -169,7 +169,7 @@ export default function Layout() {
         </BotList>
         <Profile userInfo={userInfo} onUserUpdated={getUserInfo}/>
       </Column>
-      <Chat bot_id={selectedBot.id} bot_name={selectedBot.name}/>
+      <Chat bot_id={selectedBot.id} bot_name={selectedBot.name} bot_image={selectedBot.image} idx={selectedBot.idx}/>
       { isModalOpen ? <CreateBotModal {...modalData} onClose={closeModal}/> : null}
     </Wrapper>
     </>

@@ -80,7 +80,7 @@ const ImgBox = styled.div`
 export const BotProfile = ({ src, idx }) => {
   const palette = ['#6495ED', '#00BFFF', '#32BEBE', '#FF9E9B', '#E1B771'];
   if (src) {
-    return <ImgBox><img src={src}/></ImgBox>
+    return <ImgBox className="imgBox"><img src={src}/></ImgBox>
   } else {
     return <ImgBox style={{backgroundColor: palette[idx % palette.length]}}/>
   }

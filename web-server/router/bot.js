@@ -60,9 +60,11 @@ router.post("/delete_bot", (req, res) => {
   db.execute(query, async (err, rows) => {
     if (err) {
       console.log(err);
+    } else {
+      console.log(`${id}번 봇 삭제 완료`);
+      deleteModel(id);
+      deleteHistoryFile(id);
     }
-    console.log(`${id}번 봇 삭제 완료`);
-    deleteModel(id);
     res.json(true);
   })
 });
@@ -91,7 +93,7 @@ async function createModel(botInfo, userInfo) {
     if (botInfo.mbti[0] === 'e') {
       personality += `You have a lively personality.\n`;
     } else {
-      personality += `You have a timid personality. Don't speak much.\n`;
+      personality += `You have a timid personality.\n`;
     }
     if (botInfo.mbti[1] === 'n') {
       personality += `You have a lot of imagination.\n`;
@@ -251,5 +253,14 @@ router.post('/update_bot_chat_history', (req, res) => {
     res.json(true);
   });
 });
+
+function deleteHistoryFile(bot_id) {
+  const filePath = `../DB/chat_history/bot_${bot_id}`;
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.log(`${bot_id}번 봇 대화 히스토리 삭제 오류: `, err);
+    }
+  })
+}
 
 module.exports = router;

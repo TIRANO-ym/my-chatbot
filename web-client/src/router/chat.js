@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import apiService from "../service/apiService";
-import { BatteryLoader, BotTalkingLoader } from "../component/icon-component";
+import { BatteryLoader, BotProfile, BotTalkingLoader } from "../component/icon-component";
 import historyService from "../service/historyService";
 
 const Wrapper = styled.div`
@@ -125,7 +125,11 @@ export default function Chat(props) {
     setIsBotTalking(false);
     if (response.reply) {
       addHistory('system', response.reply);
-      updateHistoryToServer();    // 현 대화(마지막 봇 대답 + 지금 내가 하는 말)는 포함되지 않고 이전 대화기록만 업데이트됨
+      // 현 대화도 같이 저장하도록
+      updateHistoryToServer([
+        { role: 'user', content: inputMessage },
+        { role: 'system', content: response.reply }
+      ]);
     } else if (response.error) {
       setErrMsg(response.error);
     }
@@ -137,9 +141,13 @@ export default function Chat(props) {
     setHistories((prev) => [...prev, newObj]);
   };
 
-  const updateHistoryToServer = async () => {
-    if (histories.length) {
-      await historyService.update(currentBotId, histories);
+  const updateHistoryToServer = async (lastConv) => {
+    const arr = histories;
+    if (lastConv) {
+      arr.push(...lastConv);
+    }
+    if (arr.length) {
+      await historyService.update(currentBotId, arr);
     }
     return true;
   };
@@ -175,7 +183,11 @@ export default function Chat(props) {
   return (
     <Wrapper>
       <HistoryBox>
-        <History>
+        <div className="selectedBotProfile">
+          <BotProfile src={props.bot_image} idx={props.idx}/>
+          <p className="name">{props.bot_name}</p>
+        </div>
+        <History className="historyUnderProfile">
           {
             histories.map((h, i) => {
               return h.role === 'system' ? <BotSaid className="chat-bubble" key={i}>{h.content}</BotSaid>
