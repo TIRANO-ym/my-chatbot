@@ -3,6 +3,7 @@ import styled from "styled-components";
 import apiService from "../service/apiService";
 import { BatteryLoader, BotProfile, BotTalkingLoader } from "../component/icon-component";
 import historyService from "../service/historyService";
+import { useTranslation } from "react-i18next";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -91,6 +92,7 @@ const ErrorMessage = styled.div`
 `;
 
 export default function Chat(props) {
+  const { t } = useTranslation();
   const [currentBotId, setCurrentBotId] = useState(props.bot_id);
   const [isBotLoading, setIsBotLoading] = useState(false);
   const [isBotTalking, setIsBotTalking] = useState(false);
@@ -98,7 +100,6 @@ export default function Chat(props) {
   const [inputMessage, setInputMessage] = useState('');
   const [histories, setHistories] = useState([]);
   const [errMsg, setErrMsg] = useState('');
-  // let pastMemory = [];
 
   const onInputChange = (e) => setInputMessage(e.target.value);
 
@@ -198,7 +199,7 @@ export default function Chat(props) {
       {errMsg ? <ErrorMessage>{errMsg}</ErrorMessage> : null}
       <MessageBox>
         <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}
-          placeholder={props.bot_name ? `${props.bot_name}에게 메시지 보내기` : '나만의 친구 봇을 추가해서 대화를 시작해보세요!'}
+          placeholder={props.bot_name ? t("chat.message_to").replace('{BOT_NAME}', props.bot_name) : t("chat.start_message")}
           disabled={!props.bot_id}
         />
       </MessageBox>

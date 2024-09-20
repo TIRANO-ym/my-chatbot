@@ -1,40 +1,17 @@
 import styled from "styled-components";
-import ErrorMessage from "./error-component";
-import { EditIcon, DeleteIcon, XIcon, LoadingWrapper, Loading } from "./icon-component";
+import ErrorMessage from "../error-component";
+import { EditIcon, DeleteIcon, LoadingWrapper, Loading } from "../icon-component";
 import { useState } from "react";
-import Modal from "react-modal";
-import apiService from "../service/apiService";
-import { modalStyles } from "./common-style-component";
+import apiService from "../../service/apiService";
+import { useTranslation } from "react-i18next";
 
-const ModalWrapper = styled.div`
+const ContentWrapper = styled.div`
   width: 100%;
-  min-width: 300px;
+  // min-width: 300px;
   height: 100%;
-  min-height: 300px;
+  // min-height: 300px;
   display: grid;
   gap: 40px;
-`;
-const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: calc(100% + 80px);
-  font-size: 1.2rem;
-  padding: 0 20px;
-  padding-bottom: 10px;
-  margin-top: -5px;
-  margin-bottom: 10px;
-  margin-left: -40px;
-  margin-right: -40px;
-  // border-bottom: solid 1px gray;
-  box-shadow: 0 4px 8px -2px black;
-  svg {
-    width: 40px;
-    cursor: pointer;
-  }
-  svg:hover {
-    opacity: 0.8;
-  }
 `;
 const PhotoWrapper = styled.div`
   display: flex;
@@ -121,7 +98,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const ModalSubmitBtn = styled.div`
+const SubmitBtn = styled.div`
   margin-top: 20px;
   display: flex;
   gap: 5px;
@@ -162,7 +139,8 @@ const ModalSubmitBtn = styled.div`
 /*
  * userInfo: { id, image, name, custom_character }
 */
-export default function UserSettingModal({ userInfo, onClose }) {
+export default function SettingUser({ userInfo, onClose }) {
+  const { t } = useTranslation();
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [deletePhoto, setDeletePhoto] = useState(false);
@@ -176,6 +154,7 @@ export default function UserSettingModal({ userInfo, onClose }) {
   // ---------------------------------
 
   const handleInputName = (e) => {
+    // eslint-disable-next-line
     let txt = e.target.value.replace(/[~!@#$%\^&*()\-_=+\[{}\];:'",<.>\/\?\\\|`]/gi, '');
     if (txt.length > 25) {
       txt = txt.slice(0, 25);
@@ -183,6 +162,7 @@ export default function UserSettingModal({ userInfo, onClose }) {
     setInputName(txt);
   }
   const handleCustomChar = (e) => {
+    // eslint-disable-next-line
     setCustomCharacter(e.target.value.replace(/[@#$%\^&\-_{}:"<>\/\?]/gi, ''));
   }
   // ---------------------------------
@@ -214,7 +194,7 @@ export default function UserSettingModal({ userInfo, onClose }) {
   const onSubmit = async() => {
     if (isUpdating) return;
     if (!inputName) {
-      setErrMsg('이름을 입력해주세요!');
+      setErrMsg(t("setting.error.name_empty"));
       return;
     }
     setIsUpdating(true);
@@ -240,12 +220,8 @@ export default function UserSettingModal({ userInfo, onClose }) {
     onClose(true);
   };
 
-  return <Modal isOpen={true} style={modalStyles}>
-    <ModalWrapper>
-      <TopBar>
-        사용자 정보 수정
-        <XIcon onClick={() => onClose()}/>
-      </TopBar>
+  return <>
+    <ContentWrapper>
       <PhotoWrapper>
         <PhotoUpload htmlFor="photo">
           <div className="phoho-edit-options">
@@ -267,23 +243,23 @@ export default function UserSettingModal({ userInfo, onClose }) {
         />
       </PhotoWrapper>
       <Row>
-        <TextLabel>이름</TextLabel>
+        <TextLabel>{t("setting.name")}</TextLabel>
         <ContentField><Input type="text" value={inputName} onChange={handleInputName} /></ContentField>
       </Row>
       <Row>
-        <TextLabel>기타 설정</TextLabel>
+        <TextLabel>{t("setting.etc_setting")}</TextLabel>
         <ContentField>
-          <TextArea value={custom_character} onChange={handleCustomChar} placeholder="그 외 친구들이 알아야 할 나의 성격이나 특징을 직접 입력해주세요.&#10;한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!&#10;* 예시 1: 나는 음악 듣는 걸 좋아해. 내 취미는 노래를 들으면서 게임을 하는거야.&#10;* 예시 2: I like listening to music. My hobby is playing games while listening to songs."/>
+          <TextArea value={custom_character} onChange={handleCustomChar} placeholder={t("setting.etc_setting_placeholder")}/>
         </ContentField>
       </Row>
-    </ModalWrapper>
+    </ContentWrapper>
     
-    <ModalSubmitBtn>
+    <SubmitBtn>
       <ErrorMessage message={errMsg}/>
       <button className="update" disabled={isUpdating} onClick={onSubmit}>{
-        isUpdating ? <LoadingWrapper><p>저장 중... </p><Loading/></LoadingWrapper>
-                  : '저장'
+        isUpdating ? <LoadingWrapper><p>{t("setting.isSaving")} </p><Loading/></LoadingWrapper>
+                  : t("setting.save")
       }</button>
-    </ModalSubmitBtn>
-  </Modal>;
+    </SubmitBtn>
+  </>;
 }

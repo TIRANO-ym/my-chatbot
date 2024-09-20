@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { SettingIcon, UserProfile } from "../component/icon-component";
-import UserSettingModal from "../component/user-setting-modal";
+import SettingModal from "../component/setting-modal/setting-modal";
 
 const Wrapper = styled.div`
   height: 80px;
@@ -49,6 +49,6 @@ export default function Profile({userInfo, onUserUpdated}) {
     <UserProfile src={currentUserInfo.image}/>
     <p className="name">{currentUserInfo.name}</p>
     <SettingIcon onClick={openModal}/>
-    { isModalOpen ? <UserSettingModal userInfo={userInfo} onClose={onAfterClose}/> : null}
+    { isModalOpen ? <SettingModal userInfo={userInfo} onClose={onAfterClose}/> : null}
   </Wrapper>;
 }

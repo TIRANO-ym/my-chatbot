@@ -7,6 +7,7 @@ import apiService from "../service/apiService";
 import { BotProfile, EditIcon, MenuIcon, PlusIcon } from "./icon-component";
 import CreateBotModal from "./create-bot-modal";
 import Profile from "../router/profile";
+import { useTranslation } from 'react-i18next';
 
 const Wrapper = styled.div`
   display: grid;
@@ -72,6 +73,7 @@ const BotItem = styled.div`
 `;
 
 export default function Layout() {
+  const { t } = useTranslation();
   const [userInfo, setUserInfo] = useState({});
   const [botList, setBotList] = useState([]);
   const [selectedBot, setSelectedBot] = useState({});
@@ -131,6 +133,7 @@ export default function Layout() {
   useEffect(() => {
     getBotList();
     getUserInfo();
+    // eslint-disable-next-line
   }, [])
 
   // const navigate = useNavigate();
@@ -163,7 +166,7 @@ export default function Layout() {
             })
           }
           { botList.length < 15 ? <BotItem className="new_bot" onClick={(e) => openModal(e)}>
-            <PlusIcon/> 새 친구 봇 추가
+            <PlusIcon/> {t("home.add_new_bot")}
           </BotItem> : null}
         </BotList>
         <Profile userInfo={userInfo} onUserUpdated={getUserInfo}/>

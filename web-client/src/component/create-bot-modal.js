@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { RadioGroup, Radio, Checkbox } from "./material-component";
 import apiService from "../service/apiService";
 import { modalStyles } from "./common-style-component";
+import { useTranslation } from "react-i18next";
 
 const ModalWrapper = styled.div`
   width: 100%;
@@ -190,6 +191,7 @@ const ModalSubmitBtn = styled.div`
  * info: if 'update' mode, there is exist bot infos. { id, image, name, age, sex, mbti, custom_character }
 */
 export default function CreateBotModal({ mode, info, userInfo, onClose }) {
+  const { t } = useTranslation();
   const [editPhoto, setEditPhoto] = useState(null);
   const [editPhotoUrl, setEditPhotoUrl] = useState('');
   const [deletePhoto, setDeletePhoto] = useState(false);
@@ -207,6 +209,7 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   // ---------------------------------
 
   const handleInputName = (e) => {
+    // eslint-disable-next-line
     let txt = e.target.value.replace(/[~!@#$%\^&*()\-_=+\[{}\];:'",<.>\/\?\\\|`]/gi, '');
     if (txt.length > 25) {
       txt = txt.slice(0, 25);
@@ -223,6 +226,7 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
     });
   };
   const handleCustomChar = (e) => {
+    // eslint-disable-next-line
     setCustomCharacter(e.target.value.replace(/[@#$%\^&\-_{}:"<>\/\?]/gi, ''));
   }
   // ---------------------------------
@@ -254,7 +258,7 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   const onSubmit = async() => {
     if (isUpdating) return;
     if (!inputName) {
-      setErrMsg('멋진 이름을 지어주세요!');
+      setErrMsg(t("bot_setting.error.name_empty"));
       return;
     }
     setIsUpdating(true);
@@ -289,9 +293,9 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   };
   const deleteClick = async() => {
     if (isUpdating) return;
-    const ok = window.confirm(`"${info.name}" 봇을 정말 삭제할건가요?`);
+    const ok = window.confirm(t("bot_setting.confirm.delete1").replace('{BOT_NAME}', info.name));
     if (!ok) return;
-    const finallyOk = window.confirm('봇과 기존 대화 내역까지 모두 삭제되며 이는 복구할 수 없습니다.\n정말 삭제할까요?');
+    const finallyOk = window.confirm(t("bot_setting.confirm.delete2"));
     if (!finallyOk) return;
 
     setIsUpdating(true);
@@ -302,7 +306,7 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   return <Modal isOpen={true} style={modalStyles}>
     <ModalWrapper>
       <TopBar>
-        { mode === 'create' ? '새 친구 봇 추가하기' : `${info.name} 수정하기`}
+        { mode === 'create' ? t("bot_setting.create_title") : t("bot_setting.update_title").replace('{BOT_NAME}', info.name)}
         <XIcon onClick={() => onClose()}/>
       </TopBar>
       <PhotoWrapper>
@@ -326,29 +330,29 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
         />
       </PhotoWrapper>
       <Row>
-        <TextLabel>이름</TextLabel>
+        <TextLabel>{t("bot_setting.name")}</TextLabel>
         <ContentField><Input type="text" value={inputName} onChange={handleInputName} /></ContentField>
       </Row>
       <Row>
-        <TextLabel>나이대</TextLabel>
+        <TextLabel>{t("bot_setting.age")}</TextLabel>
         <ContentField>
           <SelectBox
             onChange={handleSelectAge} value={selectAge}
           >
-            <option value={''}>설정하지 않음</option>
-            <option value={'10'}>10대</option>
-            <option value={'20'}>20대</option>
-            <option value={'30'}>30대</option>
+            <option value={''}>{t("bot_setting.no_set")}</option>
+            <option value={'10'}>{t("bot_setting.10age")}</option>
+            <option value={'20'}>{t("bot_setting.20age")}</option>
+            <option value={'30'}>{t("bot_setting.20age")}</option>
           </SelectBox>
         </ContentField>
       </Row>
       <Row>
-        <TextLabel>성별</TextLabel>
+        <TextLabel>{t("bot_setting.sex")}</TextLabel>
         <ContentField>
           <RadioGroup value={selectSex} onChange={setSelectSex}>
-            <Radio name="option" value={''} defaultChecked>설정하지 않음</Radio>
-            <Radio name="option" value={'m'}>남자</Radio>
-            <Radio name="option" value={'f'}>여자</Radio>
+            <Radio name="option" value={''} defaultChecked>{t("bot_setting.no_set")}</Radio>
+            <Radio name="option" value={'m'}>{t("bot_setting.male")}</Radio>
+            <Radio name="option" value={'f'}>{t("bot_setting.female")}</Radio>
           </RadioGroup>
         </ContentField>
       </Row>
@@ -356,7 +360,7 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
         <TextLabel>MBTI</TextLabel>
         <ContentField>
           <Checkbox checked={isMbtiFlag} onChange={setMbtiFlag}>
-            사용하기
+            {t("bot_setting.using")}
           </Checkbox>
         </ContentField>
       </Row>
@@ -392,9 +396,9 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
         </ContentField>
       </Row> : null}
       <Row>
-        <TextLabel>기타 설정</TextLabel>
+        <TextLabel>{t("bot_setting.etc_setting")}</TextLabel>
         <ContentField>
-          <TextArea value={custom_character} onChange={handleCustomChar} placeholder="그 외 설정하고 싶은 성격이나 특징을 직접 입력해주세요.&#10;한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!&#10;* 예시 1: 너는 중세 시대에 살고 있는 공주님이야. 공주님 처럼 대답해줘.&#10;* 예시 2: You are a princess living in the Middle Ages. Answer like a princess."/>
+          <TextArea value={custom_character} onChange={handleCustomChar} placeholder={t("bot_setting.etc_setting_placeholder")}/>
         </ContentField>
       </Row>
     </ModalWrapper>
@@ -402,12 +406,12 @@ export default function CreateBotModal({ mode, info, userInfo, onClose }) {
     <ModalSubmitBtn>
       <ErrorMessage message={errMsg}/>
       <button className="update" disabled={isUpdating} onClick={onSubmit}>{
-        isUpdating ? <LoadingWrapper><p>모델 생성 중... </p><Loading/></LoadingWrapper>
-                  : (mode === 'create') ? '생성' : '수정'
+        isUpdating ? <LoadingWrapper><p>{t("bot_setting.creating_model")} </p><Loading/></LoadingWrapper>
+                  : (mode === 'create') ? t("bot_setting.create") : t("bot_setting.update")
       }</button>
       {mode === 'update' ? <button className="delete" disabled={isUpdating} onClick={deleteClick}>{
         isUpdating ? <LoadingWrapper><Loading/></LoadingWrapper>
-                  : '삭제'
+                  : t("bot_setting.delete")
       }</button> : null}
     </ModalSubmitBtn>
   </Modal>;

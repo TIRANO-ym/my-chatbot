@@ -1,9 +1,10 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Layout from "./component/layout";
-import Chat from "./router/chat";
 import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+import i18n from './language/i18n';
+import { useEffect } from 'react';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,14 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  // init
+  useEffect(() => {
+    const lang = localStorage.getItem('lang');
+    if (lang && ['en', 'ko'].includes(lang)) {
+      i18n.changeLanguage(lang);
+    }
+  }, []);
+
   return (
     <Wrapper>
       <GlobalStyles />

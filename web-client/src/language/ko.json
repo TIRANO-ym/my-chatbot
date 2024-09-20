@@ -1,0 +1,51 @@
+{
+  "setting": {
+    "title": "설정",
+    "user": "사용자",
+    "general": "일반",
+    "lang": "언어",
+    "theme": "테마",
+    "name": "이름",
+    "etc_setting": "기타 설정",
+    "etc_setting_placeholder": "그 외 친구들이 알아야 할 나의 성격이나 특징을 직접 입력해주세요.\n한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!\n\n* 예시 1: 나는 음악 듣는 걸 좋아해. 내 취미는 노래를 들으면서 게임을 하는거야.\n* 예시 2: I like listening to music. My hobby is playing games while listening to songs.",
+    "save": "저장",
+    "isSaving": "저장 중...",
+    "error": {
+      "name_empty": "이름을 입력해주세요!"
+    }
+  },
+  "home": {
+    "add_new_bot": "새 친구 봇 추가"
+  },
+  "chat": {
+    "message_to": "{BOT_NAME}에게 메시지 보내기",
+    "start_message": "나만의 친구 봇을 추가해서 대화를 시작해보세요!"
+  },
+  "bot_setting": {
+    "error": {
+      "name_empty": "멋진 이름을 지어주세요!"
+    },
+    "confirm": {
+      "delete1": "\"{BOT_NAME}\" 봇을 정말 삭제할건가요?",
+      "delete2": "봇과 기존 대화 내역까지 모두 삭제되며 이는 복구할 수 없습니다.\n정말 삭제할까요?"
+    },
+    "create_title": "새 친구 봇 추가하기",
+    "update_title": "{BOT_NAME} 수정하기",
+    "name": "이름",
+    "age": "나이대",
+    "no_set": "설정하지 않음",
+    "10age": "10대",
+    "20age": "20대",
+    "30age": "30대",
+    "sex": "성별",
+    "male": "남자",
+    "female": "여자",
+    "using": "사용하기",
+    "etc_setting": "기타 설정",
+    "etc_setting_placeholder": "그 외 설정하고 싶은 성격이나 특징을 직접 입력해주세요.\n한글 입력도 되지만, 영어로 입력 시 정확도가 올라갑니다!\n\n* 예시 1: 너는 중세 시대에 살고 있는 공주님이야. 공주님 처럼 대답해줘.\n* 예시 2: You are a princess living in the Middle Ages. Answer like a princess.",
+    "creating_model": "모델 생성 중...",
+    "create": "생성",
+    "update": "수정",
+    "delete": "삭제"
+  }
+}

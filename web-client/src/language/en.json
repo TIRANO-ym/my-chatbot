@@ -1,0 +1,51 @@
+{
+  "setting": {
+    "title": "Setting",
+    "user": "User",
+    "general": "General",
+    "lang": "Language",
+    "theme": "Theme",
+    "name": "Name",
+    "etc_setting": "ETC",
+    "etc_setting_placeholder": "Input your personality or characteristics that other friends should know.\n\n* Example: I like listening to music. My hobby is playing games while listening to songs.",
+    "save": "Save",
+    "isSaving": "Saving...",
+    "error": {
+      "name_empty": "Input your awesome name!"
+    }
+  },
+  "home": {
+    "add_new_bot": "Add a new friend bot"
+  },
+  "chat": {
+    "message_to": "Message to {BOT_NAME}",
+    "start_message": "Start the conversation by adding my own friend bot!"
+  },
+  "bot_setting": {
+    "error": {
+      "name_empty": "Give awesome name to bot!"
+    },
+    "confirm": {
+      "delete1": "Are you sure you're going to delete \"{BOT_NAME}\"?",
+      "delete2": "Bot and all existing conversation history are deleted and cannot be recovered.\nDo you really want to delete it?"
+    },
+    "create_title": "Add a new friend bot",
+    "update_title": "Modify {BOT_NAME}",
+    "name": "Name",
+    "age": "Age group",
+    "no_set": "Do not set",
+    "10age": "10+ age",
+    "20age": "20+ age",
+    "30age": "30+ age",
+    "sex": "Gender",
+    "male": "Man",
+    "female": "Woman",
+    "using": "Using",
+    "etc_setting": "ETC",
+    "etc_setting_placeholder": "Please directly enter the personality or characteristics of bot you want to set.\n\n* Example: You are a princess living in the Middle Ages. Answer like a princess.",
+    "creating_model": "Creating model...",
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete"
+  }
+}

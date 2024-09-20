@@ -80,7 +80,7 @@ const ImgBox = styled.div`
 export const BotProfile = ({ src, idx }) => {
   const palette = ['#6495ED', '#00BFFF', '#32BEBE', '#FF9E9B', '#E1B771'];
   if (src) {
-    return <ImgBox className="imgBox"><img src={src}/></ImgBox>
+    return <ImgBox className="imgBox"><img src={src} alt="bot_profile_image"/></ImgBox>
   } else {
     return <ImgBox style={{backgroundColor: palette[idx % palette.length]}}/>
   }
@@ -108,7 +108,7 @@ const ProfileImgBox = styled.div`
 
 export const UserProfile = ({ src }) => {
   if (src) {
-    return <ProfileImgBox><img src={src}/></ProfileImgBox>
+    return <ProfileImgBox><img src={src} alt="user_profile_image"/></ProfileImgBox>
   } else {
     return <ProfileImgBox><ProfileIcon/></ProfileImgBox>
   }
