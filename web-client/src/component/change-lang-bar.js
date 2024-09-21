@@ -3,7 +3,9 @@ import i18n from "../language/i18n";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  padding: 20px 0;
+`;
 
 const TopBar = styled.div`
   width: 100%;
