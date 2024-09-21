@@ -137,6 +137,7 @@ export default function Home() {
     if (userInfo.id) {
       getBotList();
     }
+    // eslint-disable-next-line
   }, [userInfo])
 
   return <Wrapper className='layout-wrapper'>

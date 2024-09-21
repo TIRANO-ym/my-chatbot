@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import i18n from "../language/i18n";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 const Wrapper = styled.div``;
@@ -33,6 +33,14 @@ export default function ChangeLangBar() {
     localStorage.setItem('lang', e.target.value);
     i18n.changeLanguage(e.target.value);
   };
+
+  useEffect(() => {
+    const lang = localStorage.getItem('lang');
+    if (lang && ['en', 'ko'].includes(lang)) {
+      setSelectedLang(lang);
+    }
+  }, []);
+
   return <Wrapper>
     <TopBar>
       <SelectBox style={{textAlign: 'center'}}

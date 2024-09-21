@@ -1,42 +1,42 @@
 import styled from "styled-components"
-import { useNavigate } from "react-router-dom";
-import icon from "../../assets/images/icon.png";
+// import { useNavigate } from "react-router-dom";
 
-const Button = styled.span`
-  margin-top: 50px;
-  background-color: white;
-  font-weight: bold;
-  width: 100%;
-  color: black;
-  padding: 10px 20px;
-  border-radius: 50px;
-  border: 0;
-  display: flex;
-  gap: 50px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
+import { GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
-const Logo = styled.img`
-  height: 25px;
+const Wrapper = styled.div`
 `;
 
 export default function GoogleButton() {
-  const navigate = useNavigate();
-  const onClick = async () => {
-    try {
-      // todo: 외부로그인
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const clientId ="";   // own Google API key
+  
+  // const navigate = useNavigate();
+  // const onClick = async () => {
+  //   try {
+  //     // todo: 외부로그인
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
-    <Button onClick={onClick}>
-      <Logo src={icon} />
-      Continue with Google
-    </Button>
+    // <Button onClick={onClick}>
+    //   <Logo src={icon} />
+    //   Continue with Google
+    // </Button>
+    <Wrapper>
+      <GoogleOAuthProvider clientId={clientId}>
+        <GoogleLogin
+          onSuccess={credentialResponse => {
+            console.log(jwtDecode(credentialResponse.credential));
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+        />
+      </GoogleOAuthProvider>
+    </Wrapper>
   )
 }
