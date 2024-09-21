@@ -7,15 +7,15 @@ const { exec, execSync } = require('child_process');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-router.get("/bot_list", (req, res) => {
-  db.select('SELECT * FROM bot', async (err, rows) => {
+router.get("/bot_list/:userId?", (req, res) => {
+  db.select(`SELECT * FROM bot WHERE user_id=${req.params.userId}`, async (err, rows) => {
     res.json(rows);
   });
 });
 
 router.post("/create_bot", async (req, res) => {
   const { name, age, sex, mbti, custom_character, userInfo } = req.body.data;
-  const query = `INSERT INTO bot (name, age, sex, mbti, custom_character) VALUES ("${name}", "${age}", "${sex}", "${mbti}", "${custom_character}")`;
+  const query = `INSERT INTO bot (name, age, sex, mbti, custom_character, user_id) VALUES ("${name}", "${age}", "${sex}", "${mbti}", "${custom_character}", ${userInfo.id})`;
   db.execute(query, async (err, rows, insertedId) => {
     if (err) {
       console.log(err);

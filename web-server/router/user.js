@@ -7,7 +7,7 @@ const upload = multer({ dest: 'uploads/' });
 
 router.post('/getUserInfo', (req, res) => {
   const userId = req.body.data;
-  db.select(`SELECT * FROM user WHERE id=${userId}`, async (err, rows) => {
+  db.select(`SELECT * FROM user WHERE id=${userId}`, (err, rows) => {
     res.json(rows[0]);
   });
 });
@@ -55,6 +55,53 @@ router.post("/delete_user_image", async (req, res) => {
       console.log('사용자 프로필 이미지 삭제 완료');
     }
     res.json(true);
+  });
+});
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body.data;
+  const query = `SELECT id, name, email, password FROM user WHERE email="${email}"`;
+  db.select(query, async (err, rows) => {
+    if (err) {
+      console.log(err);
+      res.json({ error: err });
+    } else {
+      if (rows && rows.length && (rows[0].password === password)) {
+        // 로그인 성공
+        res.json({
+          id: rows[0].id,
+          name: rows[0].name,
+          email: rows[0].email
+        });
+      } else {
+        res.json({ error: 'Email or Password is not matched' });
+      }
+    }
+  });
+});
+
+router.post("/createUser", async (req, res) => {
+  const { email, password, name } = req.body.data;
+  const selectQuery = `SELECT * FROM user WHERE email="${email}"`;
+  const isExist = await new Promise((resolve) => {
+    db.select(selectQuery, (err, rows) => {
+      resolve(rows && rows.length);
+    });
+  });
+  // 이메일 중복
+  if (isExist) {
+    res.json({error: 'existEmail'});
+    return;
+  }
+
+  const insertQuery = `INSERT INTO user (email, password, name) VALUES ("${email}", "${password}", "${name}")`;
+  db.execute(insertQuery, async (err, rows) => {
+    if (err) {
+      console.log(err);
+      res.json({error: err});
+    } else {
+      res.json({});
+    }
   });
 });
 

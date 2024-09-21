@@ -1,15 +1,21 @@
-.hiddenMenu {
-  display: none;
+.navBar {
+  /* display: none; */
   position: absolute;
   width: calc(100% - 100px);
+  max-width: 1400px;
   height: fit-content;
   margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
   svg {
     width: 40px;
     cursor: pointer;
   }
   svg:hover {
     opacity: 0.8;
+  }
+  .menu-icon {
+    visibility: hidden;
   }
 }
 .leftMenu {
@@ -20,8 +26,10 @@
 }
 
 @media (max-width: 600px) {
-  .hiddenMenu {
-    display: initial;
+  .navBar {
+    .menu-icon {
+      visibility: visible;
+    }
   }
   .leftMenu {
     display: none !important;

@@ -1,11 +1,12 @@
-// import React from "react";
-// import { auth } from "../firebase";
-// import { Navigate } from "react-router-dom";
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { authService } from "../service/authService";
 
-// export default function ProtectedRoute({children}: {children: React.ReactNode}) {
-//   const user = auth.currentUser;
-//   if (!user) {
-//     return <Navigate to="/login" />;
-//   }
-//   return children;
-// }
+export default function ProtectedRoute({children}) {
+  const res = authService.checkLogin();
+  if (res) {
+    return children;
+  } else {
+    return <Navigate to="/login" />;
+  }
+}

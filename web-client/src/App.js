@@ -5,18 +5,29 @@ import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import i18n from './language/i18n';
 import { useEffect } from 'react';
+import ProtectedRoute from './component/protected-route';
+import Home from './router/home';
+import Login from './router/login';
+import CreateAccount from './router/create-account';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout/>,
+    element: <ProtectedRoute><Layout/></ProtectedRoute>,
     children: [
-      // {
-      //   path: "",
-      //   element: <Chat/>
-      // }
-      // {
+      {
+        path: "",
+        element: <Home/>
+      }
     ]
+  },
+  {
+    path: "/login",
+    element: <Login/>
+  },
+  {
+    path: "/create-account",
+    element: <CreateAccount/>
   }
 ]);
 

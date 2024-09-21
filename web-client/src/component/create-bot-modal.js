@@ -189,6 +189,7 @@ const ModalSubmitBtn = styled.div`
 /*
  * mode: 'create' or 'update'
  * info: if 'update' mode, there is exist bot infos. { id, image, name, age, sex, mbti, custom_character }
+ * userInfo: { id, name, custom_character }
 */
 export default function CreateBotModal({ mode, info, userInfo, onClose }) {
   const { t } = useTranslation();

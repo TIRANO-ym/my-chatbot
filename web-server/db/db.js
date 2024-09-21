@@ -15,6 +15,7 @@ database.all(
     sex VARCHAR(10) NULL,
     mbti VARCHAR(10) NULL,
     custom_character TEXT NULL,
+    user_id INTEGER NOT NULL,
     image BLOB
   )`,
   [],
@@ -28,21 +29,17 @@ database.all(
 database.all(
   `CREATE TABLE if not exists user(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     custom_character TEXT NULL,
-    image BLOB
+    image BLOB,
+    insertedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
   )`,
   [],
   (err, rows) => {
     if (err) {
       console.log('user 테이블 생성 에러: ', err);
-    } else {
-      // 첫 생성 시 default user 추가
-      database.all("INSERT INTO user (name) SELECT '사용자' WHERE NOT EXISTS (SELECT * FROM user)", [], (err, rows) => {
-        if (err) {
-          console.log('insert default user error: ', err);
-        }
-      })
     }
   }
 );
