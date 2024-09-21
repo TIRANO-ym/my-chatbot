@@ -3,9 +3,11 @@ import icon from "../assets/images/icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../service/authService";
 import { Wrapper, Title, Input, Switcher, Error, Form } from "../component/common-style-component";
+import { useTranslation } from "react-i18next";
 // import GoogleButton from "../component/third-party-login/google-btn";
 
 export default function Login() {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,13 +48,13 @@ export default function Login() {
 
   return (
     <Wrapper>
-      <Title>Log into <img src={icon} alt="logo-image"/></Title>
+      <Title>{t("login.log_into")}  <img src={icon} alt="logo-image"/></Title>
       <Form onSubmit={onSubmit}>
         <Input 
           onChange={onChange}
           name="email" 
           value={email} 
-          placeholder="Email" 
+          placeholder={t("login.email")} 
           type="email" 
           required
         />
@@ -60,19 +62,19 @@ export default function Login() {
           onChange={onChange}
           name="password" 
           value={password} 
-          placeholder="Password" 
+          placeholder={t("login.password")} 
           type="password" 
           required
         />
         <Input 
           onChange={onChange}
           type="submit" 
-          value={ isLoading ? "Loading" : "Log in" }
+          value={ isLoading ? t("login.loading") : t("login.login") }
         />
       </Form>
       { error ? <Error>{error}</Error> : null }
       <Switcher>
-        Don't have an account? <Link to="/create-account">Create one &rarr;</Link>
+        {t("login.dont_have_account")} <Link to="/create-account">{t("login.create_one")} &rarr;</Link>
       </Switcher>
       {/* <GoogleButton /> */}
     </Wrapper>

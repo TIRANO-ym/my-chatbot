@@ -3,11 +3,13 @@ import icon from "../assets/images/icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../service/authService";
 import { Wrapper, Title, Input, Switcher, Error, Form } from "../component/common-style-component";
+import { useTranslation } from "react-i18next";
 // import GoogleButton from "../component/third-party-login/google-btn";
 
 const initialValue = { name: '', email: '', password: '' };
 
 export default function CreateAccount() {
+  const {t} = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,13 +47,13 @@ export default function CreateAccount() {
 
   return (
     <Wrapper>
-      <Title>Join <img src={icon} alt="logo-image"/></Title>
+      <Title>{t("login.join")} <img src={icon} alt="logo-image"/></Title>
       <Form onSubmit={onSubmit}>
         <Input 
           onChange={onChange}
           name="name" 
           value={name} 
-          placeholder="Name" 
+          placeholder={t("login.name")} 
           type="text" 
           required
         />
@@ -59,7 +61,7 @@ export default function CreateAccount() {
           onChange={onChange}
           name="email" 
           value={email} 
-          placeholder="Email" 
+          placeholder={t("login.email")} 
           type="email" 
           required
         />
@@ -67,19 +69,19 @@ export default function CreateAccount() {
           onChange={onChange}
           name="password" 
           value={password} 
-          placeholder="Password" 
+          placeholder={t("login.password")} 
           type="password" 
           required
         />
         <Input 
           onChange={onChange}
           type="submit" 
-          value={ isLoading ? "Loading" : "Create Account" }
+          value={ isLoading ? t("login.loading") : t("login.create_account") }
         />
       </Form>
-      { error ? <Error>{error}</Error> : null }
+      { error ? <Error>{error ? t(`login.error.${error}`) : null}</Error> : null }
       <Switcher>
-        Already have an account? <Link to="/login">Log in &rarr;</Link>
+        {t("login.already_have_account")} <Link to="/login">{t("login.login")} &rarr;</Link>
       </Switcher>
       {/* <GoogleButton /> */}
     </Wrapper>

@@ -9,6 +9,7 @@ import ProtectedRoute from './component/protected-route';
 import Home from './router/home';
 import Login from './router/login';
 import CreateAccount from './router/create-account';
+import ChangeLangBar from './component/change-lang-bar';
 
 const router = createBrowserRouter([
   {
@@ -23,11 +24,23 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <ChangeLangBar/>,
+    children: [
+      {
+        path: "",
+        element: <Login/>
+      }
+    ]
   },
   {
     path: "/create-account",
-    element: <CreateAccount/>
+    element: <ChangeLangBar/>,
+    children: [
+      {
+        path: "",
+        element: <CreateAccount/>
+      }
+    ]
   }
 ]);
 

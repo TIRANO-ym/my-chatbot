@@ -49,9 +49,6 @@ const createUser = async (email, password, name) => {
   });
   if (res.error) {
     console.log(res.error);
-    if (res.error === 'existEmail') {
-      res.error = '이미 사용 중인 이메일입니다.';
-    }
   }
   return res;
 };

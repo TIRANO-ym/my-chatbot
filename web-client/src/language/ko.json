@@ -47,5 +47,21 @@
     "create": "생성",
     "update": "수정",
     "delete": "삭제"
+  },
+  "login": {
+    "already_have_account": "이미 계정이 있으신가요?",
+    "login": "로그인",
+    "log_into": "로그인",
+    "join": "회원가입",
+    "dont_have_account": "계정이 없으신가요?",
+    "create_one": "생성하기",
+    "name": "이름",
+    "email": "이메일",
+    "password": "비밀번호",
+    "loading": "로딩...",
+    "create_account": "계정 생성",
+    "error": {
+      "existEmail": "이미 사용 중인 이메일입니다."
+    }
   }
 }
