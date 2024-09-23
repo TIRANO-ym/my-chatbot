@@ -28,16 +28,15 @@
 > 대신 web-server/router/bot.js 에서 "FROM ggml-model-Q5_K_M.gguf" 부분 수정해줘야 합니다.
 5. DB 폴더로 들어갑니다.
 6. sqlite.exe 파일이 있는데 실행해서 sqlite를 설치해줍니다. (못 미더우면 직접 sqlite 사이트에서 받아서 설치해도 됩니다.)
-### 2단계: 웹 클라이언트 실행
+### 2단계: 웹 클라이언트 준비
 1. 일단 window powershell을 엽니다.
 2. 프로젝트의 web-client 경로로 이동합니다.
 3. npm install 한번 해줍니다.
-4. npm start 수행하면 준비 완료
-### 3단계: 웹 서버 실행
+### 3단계: 웹 서버 준비
 1. 프로젝트의 web-server 경로로 이동합니다.
 2. npm install 한번 해줍니다.
-3. npm start 수행하면 준비 완료
 ### 4단계: 사용해보기
+* 프로젝트 경로에서 ".\run_chatbot.bat" 실행
 * 이제 localhost:3000 으로 접속해서 나만의 챗봇을 추가하고 대화할 수 있습니다.
 
 ## 팁
@@ -83,14 +82,13 @@
 4. Open the "올라마 세팅과정 2 - 한국어 모델.txt" file and do so. **(It is for Korean).** Now, LLM is ready.
 5. Enter the DB folder.
 6. There is a "sqlite.exe" file. Runs it for install sqlite. (Or you can get it and install it directly from the SQLite web site.)
-### Step 2: Run web-client
+### Step 2: Prepare web-client
 1. First, open window powdershell.
 2. Move to the web-client path of the project.
 3. Run command: "npm install"
-4. And run command: "npm start"
-### Step 3: Run web-server
+### Step 3: Prepare web-server
 1. Move to the web-server path of the project.
 2. Run command: "npm install"
-3. And run command: "npm start"
 ### Step 4: Let's use!
+* Run command ".\run_chatbot.bat" on the project path.
 * Now, you can access the localhost:3000 to add your own chat-bot friend.
