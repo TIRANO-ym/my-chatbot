@@ -14,8 +14,8 @@ const TopBar = styled.div`
 `;
 
 const SelectBox = styled.select`
-  background-color: #00000070;
-  color: white;
+  background-color: ${({theme}) => theme.inputBgColor};
+  color: ${({theme}) => theme.textColor};
   width: 120px;
   font-size: 1.1rem;
   height: 30px;

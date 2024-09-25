@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
-  background-color: #00000030;
+  background-color: ${({theme}) => theme.profileBgColor};
   .name {
     display: block;
     width: 90%;
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     width: 45px;
   }
   .setting-icon:hover {
-    opacity: 0.9;
+    opacity: 0.8;
   }
 `;
 

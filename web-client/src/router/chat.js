@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 const HistoryBox = styled.div`
   height: calc(100% - 100px);
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: ${({theme}) => theme.chatBoxBgColor};
   position: relative;
 `;
 const History = styled.div`
@@ -34,8 +34,8 @@ const BotSaid = styled.div`
   margin-right: auto;
   border-radius: 20px;
   border: 0;
-  background-color: white;
-  color: black;
+  background-color: ${({theme}) => theme.botChatBgColor};
+  color: ${({theme}) => theme.botChatTextColor};
   display: flex;
   padding: 20px;
   margin-top: 10px;
@@ -49,8 +49,8 @@ const ISaid = styled.div`
   margin-left: auto;
   border-radius: 20px;
   border: 0;
-  background-color: rgb(213 192 237);
-  color: black;
+  background-color: ${({theme}) => theme.userChatBgColor};
+  color: ${({theme}) => theme.userChatTextColor};
   display: flex;
   padding: 20px;
   margin-top: 10px;
@@ -68,15 +68,15 @@ const InputArea = styled.textarea`
   height: 100%;
   border: 0;
   border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: ${({theme}) => theme.chatInputAreaBgColor};
   resize: none;
-  color: white;
+  color: ${({theme}) => theme.chatInputAreaTextColor};
   padding: 20px;
   font-size: 1.1rem;
   font-family: var(--font-nanumfont);
   &:focus {
     outline: none;
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: ${({theme}) => theme.chatInputAreaFocusBgColor};
   }
   &::placeholder {
     color: gray;

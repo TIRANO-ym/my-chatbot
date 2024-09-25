@@ -1,39 +1,5 @@
 import styled from "styled-components";
 
-export const modalStyles = {
-  overlay: {
-    backgroundColor: "#000000dd",
-    zIndex: 1000
-  },
-  content: {
-    backgroundColor: "rgb(30, 30, 30)",
-    minWidth: "400px",
-    width: "35%",
-    height: "fit-content",
-    margin: "auto",
-    border: "0",
-    borderRadius: "10px",
-    padding: "20px 40px"
-  }
-};
-
-export const settingModalStyles = {
-  overlay: {
-    backgroundColor: "#000000dd",
-    zIndex: 1000
-  },
-  content: {
-    backgroundColor: "rgb(30, 30, 30)",
-    minWidth: "400px",
-    width: "45%",
-    height: "fit-content",
-    margin: "auto",
-    border: "0",
-    borderRadius: "10px",
-    padding: "20px 0"
-  }
-};
-
 export const Wrapper = styled.div`
   height: 100%;
   display: flex;
@@ -62,8 +28,8 @@ export const Form = styled.form`
 `;
 
 export const Input = styled.input`
-  background-color: #00000070;
-  color: white;
+  background-color: ${({theme}) => theme.inputBgColor};
+  color: ${({theme}) => theme.textColor};
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
@@ -72,6 +38,7 @@ export const Input = styled.input`
   &[type="submit"] {
     cursor: pointer;
     font-weight: bold;
+    font-family: var(--font-nanumfont);
     background-color: rgb(99, 80, 122);
     color: white;
     &:hover {

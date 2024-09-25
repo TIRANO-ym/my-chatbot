@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import i18n from "../../language/i18n";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../../theme";
 
 const ContentWrapper = styled.div`
   width: 100%;
@@ -21,7 +22,7 @@ const Row = styled.div`
 `;
 const TextLabel = styled.div`
   width: 20%;
-  color: rgb(170, 144, 202);
+  color: ${({theme}) => theme.labelColor};
   font-weight: bold;
   font-size: 1.1rem;
 `;
@@ -30,8 +31,8 @@ const ContentField = styled.div`
 `;
 
 const SelectBox = styled.select`
-  background-color: #00000070;
-  color: white;
+  background-color: ${({theme}) => theme.inputBgColor};
+  color: ${({theme}) => theme.textColor};
   width: 100%;
   font-size: 1.1rem;
   height: 30px;
@@ -47,8 +48,9 @@ const SelectBox = styled.select`
 /*
  * userInfo: { id, image, name, custom_character }
 */
-export default function SettingGeneral() {
+export default function SettingGeneral(props) {
   const { t } = useTranslation();
+  const { setCurrentTheme } = useTheme();
   const [selectedLang, setSelectedLang] = useState('');
   const [selectedTheme, setSelectedTheme] = useState('');
 
@@ -67,6 +69,7 @@ export default function SettingGeneral() {
   const handleSelectedTheme = (e) => {
     setSelectedTheme(e.target.value);
     localStorage.setItem('theme', e.target.value);
+    setCurrentTheme(e.target.value);
   };
 
   return <>
@@ -89,6 +92,7 @@ export default function SettingGeneral() {
             onChange={handleSelectedTheme} value={selectedTheme}
           >
             <option value={'dark'}>Dark</option>
+            <option value={'light'}>Light</option>
           </SelectBox>
         </ContentField>
       </Row>

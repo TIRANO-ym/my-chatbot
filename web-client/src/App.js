@@ -1,15 +1,16 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Layout from "./component/layout";
-import styled, { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import reset from "styled-reset";
 import i18n from './language/i18n';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ProtectedRoute from './component/protected-route';
 import Home from './router/home';
 import Login from './router/login';
 import CreateAccount from './router/create-account';
 import ChangeLangBar from './component/change-lang-bar';
+import theme, { ThemeContext } from './theme';
 
 const router = createBrowserRouter([
   {
@@ -50,8 +51,8 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    background-color: rgb(41, 41, 41);
-    color: white;
+    background-color: ${(props) => props.theme.backgroundColor};
+    color: ${(props) => props.theme.textColor};
     font-size: 1.1rem;
   }
 
@@ -69,19 +70,27 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  const [currentTheme, setCurrentTheme] = useState('dark');
+
   // init
   useEffect(() => {
     const lang = localStorage.getItem('lang');
     if (lang && ['en', 'ko'].includes(lang)) {
       i18n.changeLanguage(lang);
     }
+    const ctheme = localStorage.getItem('theme');
+    setCurrentTheme(ctheme ? ctheme : 'dark');
   }, []);
 
   return (
-    <Wrapper>
-      <GlobalStyles />
-      <RouterProvider router={router} />
-    </Wrapper>
+    <ThemeContext.Provider value={{ setCurrentTheme, theme: theme[currentTheme] }}>
+    <ThemeProvider theme={theme[currentTheme]}>
+      <Wrapper>
+        <GlobalStyles />
+        <RouterProvider router={router}/>
+      </Wrapper>
+    </ThemeProvider>
+    </ThemeContext.Provider>
   );
 }
 

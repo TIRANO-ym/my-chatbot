@@ -6,6 +6,7 @@ import { settingModalStyles } from "../common-style-component";
 import SettingUser from "./setting-user";
 import SettingGeneral from "./setting-general";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "../../theme";
 
 const TopBar = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const MenuList = styled.div`
   height: 100%;
   border-right: solid 1px rgba(0, 0, 0, 0.1);
   .selected {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: ${({theme}) => theme.selectedColor} !important;
   }
 `;
 const Menu = styled.div`
@@ -56,7 +57,7 @@ const Menu = styled.div`
   align-items: center;
   padding-left: 40px;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.055);
+    background-color: ${({theme}) => theme.hoverColor};
   }
 `;
 
@@ -67,6 +68,23 @@ const Menu = styled.div`
 export default function SettingModal({ userInfo, onClose }) {
   const { t } = useTranslation();
   const [selectedMenu, setSelectedMenu] = useState('user');
+  const { theme } = useTheme();
+  const modalStyle = {
+    overlay: {
+      backgroundColor: "#000000dd",
+      zIndex: 1000
+    },
+    content: {
+      backgroundColor: theme.modal.backgroundColor,
+      minWidth: "400px",
+      width: "45%",
+      height: "fit-content",
+      margin: "auto",
+      border: "0",
+      borderRadius: "10px",
+      padding: "20px 0"
+    }
+  };
 
   const onChangeMenu = (menu) => {
     if (menu !== selectedMenu) {
@@ -74,7 +92,7 @@ export default function SettingModal({ userInfo, onClose }) {
     }
   }
 
-  return <Modal isOpen={true} style={settingModalStyles}>
+  return <Modal isOpen={true} style={modalStyle}>
     <TopBar>
       {t("setting.title")}
       <XIcon onClick={() => onClose()}/>

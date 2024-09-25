@@ -23,6 +23,7 @@ const Column = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  background-color: ${({theme}) => theme.backgroundColor};
 `;
 
 const BotList = styled.div`
@@ -47,13 +48,13 @@ const BotItem = styled.div`
   height: 50px;
   width: 100%;
   &:hover {
-    background-color: rgba(255, 255, 255, 0.055);
+    background-color: ${({theme}) => theme.hoverColor};
     .icon {
       display: initial;
     }
   }
   &.selected {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: ${({theme}) => theme.selectedColor};
   }
   .name {
     display: block;

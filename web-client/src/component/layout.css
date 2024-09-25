@@ -38,7 +38,6 @@
     display: flex !important;
     position: absolute;
     z-index: 100;
-    background-color: rgb(41, 41, 41);
     width: calc(100% - 100px) !important;
     height: calc(100% - 100px);
   }

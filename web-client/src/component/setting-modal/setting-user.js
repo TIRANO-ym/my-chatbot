@@ -23,7 +23,7 @@ const PhotoUpload = styled.label`
   overflow: hidden;
   height: 150px;
   border-radius: 50%;
-  background-color: #ffffff50;
+  background-color: ${({theme}) => theme.photoBgColor};
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -36,6 +36,7 @@ const PhotoUpload = styled.label`
     width: 100%;
     height: 100%;
     padding: 5px;
+    color: white;
     svg:hover {
       opacity: 0.8;
     }
@@ -64,7 +65,7 @@ const Row = styled.div`
 `;
 const TextLabel = styled.div`
   width: 20%;
-  color: rgb(170, 144, 202);
+  color: ${({theme}) => theme.labelColor};
   font-weight: bold;
   font-size: 1.1rem;
 `;
@@ -72,14 +73,14 @@ const ContentField = styled.div`
   width: 80%;
 `;
 const Input = styled.input`
-  background-color: #00000070;
+  background-color: ${({theme}) => theme.inputBgColor};
   width: 100%;
   font-size: 1.1rem;
   border-radius: 10px;
   border: 0;
   height: 30px;
   padding: 0px 10px;
-  color: white;
+  color: ${({theme}) => theme.textColor};
 `;
 const TextArea = styled.textarea`
   width: 100%;
@@ -88,8 +89,8 @@ const TextArea = styled.textarea`
   resize: none;
   border-radius: 10px;
   border: 0;
-  background-color: #00000070;
-  color: white;
+  background-color: ${({theme}) => theme.inputBgColor};
+  color: ${({theme}) => theme.textColor};
   padding: 10px;
   font-family: var(--font-nanumfont);
   font-size: 1.1rem;
@@ -117,12 +118,12 @@ const SubmitBtn = styled.div`
       opacity: 0.9;
     }
     &:disabled {
-      background-color: rgb(80, 80, 80);
+      background-color: ${({theme}) => theme.disabledBgColor};
       cursor: default;
     }
   }
   .update {
-    background-color: rgb(99, 80, 122);
+    background-color: ${({theme}) => theme.submitBtnBgColor};
     color: white;
     font-weight: bold;
     font-size: 1.1rem;
