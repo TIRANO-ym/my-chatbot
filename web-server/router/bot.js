@@ -154,10 +154,10 @@ PARAMETER stop <s>
 PARAMETER stop </s>`;
 
   // 2. 모델 파일 작성
-  const step2 = await fs.writeFileSync(`../LLM/custom-model-files/${fileName}`, content);
+  await fs.writeFileSync(`../LLM/custom-model-files/${fileName}`, content);
 
   // 3. 올라마 모델 생성
-  const step3 = await execSync(`ollama create friend${botInfo.id} -f ../LLM/custom-model-files/${fileName}`);
+  await execSync(`ollama create friend${botInfo.id} -f ../LLM/custom-model-files/${fileName}`);
   
   return true;
 }

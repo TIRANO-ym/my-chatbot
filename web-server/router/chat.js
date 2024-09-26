@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const customTone = require("../db/custom-tone.json");
+const { exec, execSync } = require('child_process');
 
 // const { default: ollama } = require('ollama');
 // const axios = require('axios');
@@ -29,10 +30,27 @@ router.post("/send_message", async (req, res) => {
   // });
   const msgArr = [...prevConversation, { role: 'user', content: inputMessage }];
 
-  const completion = await openai.chat.completions.create({
-    model: `friend${bot_id}`,
-    messages: msgArr
-  });
+  let completion;
+  try {
+    completion = await openai.chat.completions.create({
+      model: `friend${bot_id}`,
+      messages: msgArr
+    });
+  } catch (e) {
+    console.log(e);
+    // Connection error 발생 시
+    if (e.message.startsWith('Connection error')) {
+      res.json({
+        error: 'Please execute ollama! (write "ollama serve" on cmd or execute Ollama app using window searchbar)'
+     });
+    } else {
+      res.json({
+        error: e.message
+     });
+    }
+    return;
+  }
+
   try {
     let reply = completion.choices[0].message.content;
     console.log('받은 메시지: ', reply);

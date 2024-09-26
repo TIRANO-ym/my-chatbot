@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import apiService from "../service/apiService";
-import { BatteryLoader, BotProfile, BotTalkingLoader } from "../component/icon-component";
+import { BatteryLoader, BotProfile, BotTalkingLoader, XIcon } from "../component/icon-component";
 import historyService from "../service/historyService";
 import { useTranslation } from "react-i18next";
 
@@ -83,16 +83,28 @@ const InputArea = styled.textarea`
   }
 `;
 
-const ErrorMessage = styled.div`
-  color: tomato;
+const ErrorBox = styled.div`
   width: 100%;
   max-height: 50px;
-  overflow-y: hidden;
   text-align: center;
+  display: flex;
+  align-items: center;
+  svg {
+    width: 30px;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+  svg:hover {
+    opacity: 0.8;
+  }
+`;
+const ErrorMessage = styled.div`
+  color: tomato;
 `;
 
 export default function Chat(props) {
   const { t } = useTranslation();
+  const scrollRef = useRef(null);
   const [currentBotId, setCurrentBotId] = useState(props.bot_id);
   const [isBotLoading, setIsBotLoading] = useState(false);
   const [isBotTalking, setIsBotTalking] = useState(false);
@@ -131,7 +143,13 @@ export default function Chat(props) {
         { role: 'system', content: response.reply }
       ]);
     } else if (response.error) {
+      // 메시지 전송 에러. 전송되지 않은 메시지 히스토리 제거 후 재세팅
       setErrMsg(response.error);
+      setHistories((prev) => {
+        const lastUserSaid = prev.pop();
+        setInputMessage(lastUserSaid.content);
+        return prev;
+      });
     }
   };
 
@@ -164,7 +182,7 @@ export default function Chat(props) {
     }
     setHistories(result);
     setIsBotLoading(false);
-  }
+  };
 
   useEffect(() => {
     // 봇 변경
@@ -178,6 +196,13 @@ export default function Chat(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.bot_id]);
 
+  useEffect(() => {
+    // 챗박스 스크롤 맨 아래로
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [histories]);
+
   return (
     <Wrapper>
       <HistoryBox>
@@ -185,7 +210,7 @@ export default function Chat(props) {
           <BotProfile src={props.bot_image} idx={props.idx}/>
           <p className="name">{props.bot_name}</p>
         </div>
-        <History className="historyUnderProfile">
+        <History className="historyUnderProfile" ref={scrollRef}>
           {
             histories.map((h, i) => {
               return h.role === 'system' ? <BotSaid className="chat-bubble" key={i}>{h.content}</BotSaid>
@@ -196,7 +221,7 @@ export default function Chat(props) {
         </History>
         { isBotLoading ? <BatteryLoader/> : null }
       </HistoryBox>
-      {errMsg ? <ErrorMessage>{errMsg}</ErrorMessage> : null}
+      {errMsg ? <ErrorBox><XIcon onClick={() => setErrMsg('')}/><ErrorMessage>{errMsg}</ErrorMessage></ErrorBox> : null}
       <MessageBox>
         <InputArea type="text" value={inputMessage} onChange={onInputChange} onKeyDown={pressEnter}
           placeholder={props.bot_name ? t("chat.message_to").replace('{BOT_NAME}', props.bot_name) : t("chat.start_message")}
